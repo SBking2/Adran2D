@@ -1,0 +1,15 @@
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\context.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\context.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\egl_context.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\egl_context.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\init.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\init.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\input.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\input.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\monitor.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\monitor.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\osmesa_context.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\osmesa_context.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\vulkan.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\vulkan.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\wgl_context.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\wgl_context.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\win32_init.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\win32_init.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\win32_joystick.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\win32_joystick.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\win32_monitor.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\win32_monitor.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\win32_thread.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\win32_thread.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\win32_time.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\win32_time.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\win32_window.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\win32_window.obj
+D:\MyCode\C++\Adran\Adran\vendor\GLFW\src\window.c;D:\MyCode\C++\Adran\Adran\vendor\GLFW\bin-int\Debug-windows-x86_64\GLFW\window.obj

@@ -1,0 +1,13 @@
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/CMakeFiles/uninstall.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/CMakeFiles/UpdateAssimpLibsDebugSymbolsAndDLLs.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/CMakeFiles/INSTALL.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/CMakeFiles/ALL_BUILD.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/CMakeFiles/ZERO_CHECK.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/contrib/zlib/CMakeFiles/zlibstatic.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/contrib/zlib/CMakeFiles/INSTALL.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/contrib/zlib/CMakeFiles/ALL_BUILD.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/code/CMakeFiles/assimp.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/code/CMakeFiles/INSTALL.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/test/CMakeFiles/unit.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/test/CMakeFiles/INSTALL.dir
+D:/MyCode/C++/Adran/Adran/vendor/assimp/Build/test/headercheck/CMakeFiles/INSTALL.dir

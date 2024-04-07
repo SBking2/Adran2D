@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\MyCode\C++\Adran\Adran\vendor\assimp\Build\CMakeFiles\1bb661871dec9fa80478e48044b4a596\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{606C6529-8A68-35DE-9D4C-340C06C5977E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

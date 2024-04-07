@@ -1,0 +1,21 @@
+[submodule "Adran/vendor/spdlog"]
+	path = Adran/vendor/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "Adran/vendor/GLFW"]
+	path = Adran/vendor/GLFW
+	url = https://github.com/TheCherno/glfw
+[submodule "Adran/vendor/imgui"]
+	path = Adran/vendor/imgui
+	url = https://github.com/TheCherno/imgui
+[submodule "ChernoTest/imgui"]
+	path = ChernoTest/imgui
+	url = https://github.com/TheCherno/imgui
+[submodule "Adran/vendor/glm"]
+	path = Adran/vendor/glm
+	url = https://github.com/g-truc/glm
+[submodule "Adran/vendor/yaml-cpp"]
+	path = Adran/vendor/yaml-cpp
+	url = https://github.com/TheCherno/yaml-cpp
+[submodule "Adran/vendor/ImGuizmo"]
+	path = Adran/vendor/ImGuizmo
+	url = https://github.com/thecherno/imguizmo

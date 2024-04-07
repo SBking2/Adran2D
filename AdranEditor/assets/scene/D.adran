@@ -1,0 +1,11 @@
+Scene: Adran Scene
+Entities:
+  - Entity: 2614831524
+    NameComponent:
+      Name: GODA
+    TransformComponent:
+      position: [0, 0, 0]
+      rotation: [0, 0, 0, 1]
+      scale: [0.00999999978, 0.00999999978, 0.00999999978]
+    ModelComponent:
+      ModelPath: assets\models\godaMix\Sword And Shield Attack.fbx

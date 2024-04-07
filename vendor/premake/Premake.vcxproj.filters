@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="..">
+      <UniqueIdentifier>{61705900-4DFC-870B-B6AA-880BA255880B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Adran">
+      <UniqueIdentifier>{36EBF136-22B8-4C42-4BD1-3AEA37FD81D0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Adran\vendor">
+      <UniqueIdentifier>{D308B25E-3F94-1F23-48A5-A217B4AF7B23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Adran\vendor\GLFW">
+      <UniqueIdentifier>{F23FE2F6-DECE-6BC0-87ED-7FBB735B7C66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Adran\vendor\Glad">
+      <UniqueIdentifier>{9ACBE2F6-865A-6CC0-2F79-80BB1BE77C66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Adran\vendor\imgui">
+      <UniqueIdentifier>{7D28A4D5-E994-5FD0-B288-F72D1EB48138}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\Adran\vendor\yaml-cpp">
+      <UniqueIdentifier>{E50CF7EE-D131-466F-FA7C-2BFFE600458D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\AdranEditor">
+      <UniqueIdentifier>{7D118082-69DF-7388-5273-E4AE3EE04FED}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="..\SandBox">
+      <UniqueIdentifier>{1FF36A1D-0BAB-AC6A-74B2-85C66089475B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\Adran\premake5.lua">
+      <Filter>..\Adran</Filter>
+    </None>
+    <None Include="..\..\Adran\vendor\GLFW\premake5.lua">
+      <Filter>..\Adran\vendor\GLFW</Filter>
+    </None>
+    <None Include="..\..\Adran\vendor\Glad\premake5.lua">
+      <Filter>..\Adran\vendor\Glad</Filter>
+    </None>
+    <None Include="..\..\Adran\vendor\imgui\premake5.lua">
+      <Filter>..\Adran\vendor\imgui</Filter>
+    </None>
+    <None Include="..\..\Adran\vendor\yaml-cpp\premake5.lua">
+      <Filter>..\Adran\vendor\yaml-cpp</Filter>
+    </None>
+    <None Include="..\..\AdranEditor\premake5.lua">
+      <Filter>..\AdranEditor</Filter>
+    </None>
+    <None Include="..\..\SandBox\premake5.lua">
+      <Filter>..\SandBox</Filter>
+    </None>
+    <None Include="..\..\premake5.lua">
+      <Filter>..</Filter>
+    </None>
+    <None Include="premake5.lua" />
+  </ItemGroup>
+</Project>
