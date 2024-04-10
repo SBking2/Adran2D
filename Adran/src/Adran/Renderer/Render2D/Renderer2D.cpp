@@ -54,7 +54,6 @@ namespace Adran
 
 	void Renderer2D::Init()
 	{
-
 		s_Data.QuadVertexArray = VertexArray::Create();
 		
 		//Create Vertex Buffer
@@ -99,7 +98,7 @@ namespace Adran
 			s_Data.TexSlots[i] = s_Data.whiteTexture;
 		}
 
-		s_Data.TextureShader = Shader::Create("../AdranEditor/assets/Shader/FlatColorShader.glsl");
+		s_Data.TextureShader = Shader::Create("assets/Shader/FlatColorShader.glsl");
 		s_Data.TextureShader->Bind();
 
 		int32_t samplers[s_Data.MaxTexNum];

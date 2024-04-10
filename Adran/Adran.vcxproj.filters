@@ -28,9 +28,6 @@
     <Filter Include="src\Adran\Renderer\Render2D">
       <UniqueIdentifier>{CD96CB8D-39A4-F973-C28A-F55E2E97C52A}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Adran\Renderer\Render3D">
-      <UniqueIdentifier>{EE96CB8D-5AA4-F973-E38A-F55E4F97C52A}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Adran\Renderer\RenderObject">
       <UniqueIdentifier>{AE89246A-1A6D-33AA-2370-61E68FD2F9FA}</UniqueIdentifier>
     </Filter>
@@ -117,6 +114,9 @@
     <ClInclude Include="src\Adran\Core\Tool.h">
       <Filter>src\Adran\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Adran\Core\UUID.h">
+      <Filter>src\Adran\Core</Filter>
+    </ClInclude>
     <ClInclude Include="src\Adran\Core\Window.h">
       <Filter>src\Adran\Core</Filter>
     </ClInclude>
@@ -159,9 +159,6 @@
     <ClInclude Include="src\Adran\Renderer\Render2D\Renderer2D.h">
       <Filter>src\Adran\Renderer\Render2D</Filter>
     </ClInclude>
-    <ClInclude Include="src\Adran\Renderer\Render3D\Renderer3D.h">
-      <Filter>src\Adran\Renderer\Render3D</Filter>
-    </ClInclude>
     <ClInclude Include="src\Adran\Renderer\RenderAPI.h">
       <Filter>src\Adran\Renderer</Filter>
     </ClInclude>
@@ -174,15 +171,6 @@
     <ClInclude Include="src\Adran\Renderer\RenderObject\FrameBuffer.h">
       <Filter>src\Adran\Renderer\RenderObject</Filter>
     </ClInclude>
-    <ClInclude Include="src\Adran\Renderer\RenderObject\Material.h">
-      <Filter>src\Adran\Renderer\RenderObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Adran\Renderer\RenderObject\Model\Mesh.h">
-      <Filter>src\Adran\Renderer\RenderObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Adran\Renderer\RenderObject\Model\Model.h">
-      <Filter>src\Adran\Renderer\RenderObject</Filter>
-    </ClInclude>
     <ClInclude Include="src\Adran\Renderer\RenderObject\Shader.h">
       <Filter>src\Adran\Renderer\RenderObject</Filter>
     </ClInclude>
@@ -190,9 +178,6 @@
       <Filter>src\Adran\Renderer\RenderObject</Filter>
     </ClInclude>
     <ClInclude Include="src\Adran\Renderer\RenderObject\Texture.h">
-      <Filter>src\Adran\Renderer\RenderObject</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Adran\Renderer\RenderObject\Model\Vertex.h">
       <Filter>src\Adran\Renderer\RenderObject</Filter>
     </ClInclude>
     <ClInclude Include="src\Adran\Renderer\RenderObject\VertexArray.h">
@@ -1506,9 +1491,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Adran\Renderer\RenderObject\Light.h" />
-    <ClInclude Include="src\Adran\Core\UUID.h" />
-    <ClInclude Include="src\Adran\Renderer\RenderObject\Model\Animation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Adran\Core\Application.cpp">
@@ -1527,6 +1509,9 @@
       <Filter>src\Adran\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Adran\Core\Tool.cpp">
+      <Filter>src\Adran\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Adran\Core\UUID.cpp">
       <Filter>src\Adran\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Adran\ImGui\ImGuiBuild.cpp">
@@ -1553,9 +1538,6 @@
     <ClCompile Include="src\Adran\Renderer\Render2D\Renderer2D.cpp">
       <Filter>src\Adran\Renderer\Render2D</Filter>
     </ClCompile>
-    <ClCompile Include="src\Adran\Renderer\Render3D\Renderer3D.cpp">
-      <Filter>src\Adran\Renderer\Render3D</Filter>
-    </ClCompile>
     <ClCompile Include="src\Adran\Renderer\RenderAPI.cpp">
       <Filter>src\Adran\Renderer</Filter>
     </ClCompile>
@@ -1566,15 +1548,6 @@
       <Filter>src\Adran\Renderer\RenderObject</Filter>
     </ClCompile>
     <ClCompile Include="src\Adran\Renderer\RenderObject\FrameBuffer.cpp">
-      <Filter>src\Adran\Renderer\RenderObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Adran\Renderer\RenderObject\Material.cpp">
-      <Filter>src\Adran\Renderer\RenderObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Adran\Renderer\RenderObject\Model\Mesh.cpp">
-      <Filter>src\Adran\Renderer\RenderObject</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Adran\Renderer\RenderObject\Model\Model.cpp">
       <Filter>src\Adran\Renderer\RenderObject</Filter>
     </ClCompile>
     <ClCompile Include="src\Adran\Renderer\RenderObject\Shader.cpp">
@@ -1640,8 +1613,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Adran\Renderer\RenderObject\Light.cpp" />
-    <ClCompile Include="src\Adran\Core\UUID.cpp" />
-    <ClCompile Include="src\Adran\Renderer\RenderObject\Model\Animation.cpp" />
   </ItemGroup>
 </Project>

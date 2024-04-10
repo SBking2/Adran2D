@@ -5,6 +5,8 @@
 #include"Component.h"
 #include "Adran/Core/AssetsManager.h"
 
+#include <glm/gtx/quaternion.hpp>
+
 namespace YAML
 {
 	template<>
@@ -27,6 +29,28 @@ namespace YAML
 			rhs.x = node[0].as<float>();
 			rhs.y = node[1].as<float>();
 			rhs.z = node[2].as<float>();
+			return true;
+		}
+	};
+
+	template<>
+	struct convert<glm::vec2>
+	{
+		static Node encode(const glm::vec2& rhs)
+		{
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::vec2& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 2)
+				return false;
+
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
 			return true;
 		}
 	};
@@ -92,6 +116,13 @@ namespace Adran
 	{
 		out << YAML::Flow;
 		out << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
+		return out;
+	}
+
+	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v)
+	{
+		out << YAML::Flow;
+		out << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
 		return out;
 	}
 
@@ -164,9 +195,9 @@ namespace Adran
 
 				{
 					auto& tc = gameObject.GetComponent<TransformComponent>();
-					tc.position = transform["position"].as<glm::vec3>();
-					tc.rotation = transform["rotation"].as<glm::quat>();
-					tc.scale = transform["scale"].as<glm::vec3>();
+					tc.position = transform["position"].as<glm::vec2>();
+					tc.rotation = transform["rotation"].as<float>();
+					tc.scale = transform["scale"].as<glm::vec2>();
 				}
 
 				auto camera = entity["CameraComponent"];
@@ -183,21 +214,6 @@ namespace Adran
 					cc.camera.SetPerFOV(camera["PerFOV"].as<float>());
 					cc.camera.SetPerNear(camera["PerNear"].as<float>());
 					cc.camera.SetPerFar(camera["PerFar"].as<float>());
-				}
-
-				auto model = entity["ModelComponent"];
-
-				if (model)
-				{
-					auto& mc = gameObject.AddComponent<ModelComponent>();
-					if (model["ModelPath"].as<std::string>() == "NULL")
-					{
-
-					}
-					else
-					{
-						mc.model = CreateRef<Model>(model["ModelPath"].as<std::string>());
-					}
 				}
 
 			}
@@ -247,24 +263,6 @@ namespace Adran
 			out << YAML::Key << "PerFOV" << YAML::Value << cc.camera.GetPerFOV();
 			out << YAML::Key << "PerNear" << YAML::Value << cc.camera.GetPerNear();
 			out << YAML::Key << "PerFar" << YAML::Value << cc.camera.GetPerFar();
-			out << YAML::EndMap;
-		}
-
-		if (entity.HasComponent<ModelComponent>())
-		{
-			out << YAML::Key << "ModelComponent";
-			out << YAML::BeginMap;//Sprite Component
-
-			auto& mc = entity.GetComponent<ModelComponent>();
-			if (mc.model != nullptr)
-			{
-				out << YAML::Key << "ModelPath" << YAML::Value << mc.model->GetPath();
-			}
-			else
-			{
-				out << YAML::Key << "ModelPath" << YAML::Value << "NULL";
-			}
-
 			out << YAML::EndMap;
 		}
 

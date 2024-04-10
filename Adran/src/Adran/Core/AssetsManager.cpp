@@ -17,18 +17,7 @@ namespace Adran
 
 		return m_texturesMap[filePath] = Texture2D::Create(filePath);
 	}
-	Ref<Model> AssetsManager::GetModel(const std::string& filePath)
-	{
-		if (!IsFileExist(filePath))
-			return nullptr;
 
-		if (IsModelExist(filePath))
-		{
-			return m_modelMap[filePath];
-		}
-
-		return m_modelMap[filePath] = CreateRef<Model>(filePath);
-	}
 	
 	bool AssetsManager::IsTextureExist(const std::string& filePath)
 	{
@@ -38,14 +27,7 @@ namespace Adran
 		}
 		return false;
 	}
-	bool AssetsManager::IsModelExist(const std::string& filePath)
-	{
-		if (m_modelMap.find(filePath) != m_modelMap.end())
-		{
-			return true;
-		}
-		return false;
-	}
+
 	bool AssetsManager::IsFileExist(const std::string& filePath)
 	{
 		std::ifstream file(filePath);

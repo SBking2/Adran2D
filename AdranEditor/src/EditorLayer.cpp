@@ -49,8 +49,6 @@ namespace Adran {
         {
 
             m_scene = CreateRef<Scene>();
-            m_light = CreateRef<Light>();
-            m_light->SetPosition(glm::vec3(-1.0f, 10.0f, -1.0f));
             m_startIcon = Texture2D::Create("assets/Icon/start.png");
             m_pauseIcon = Texture2D::Create("assets/Icon/pause.png");
             /*m_cameraEntity = CreateRef<Entity>(m_scene->CreateEntity("Camera"));
@@ -134,21 +132,8 @@ namespace Adran {
         //ClearAttachment需要放在Scene绘制函数前面
         m_frameBuffer->ClearAttachment(1, -1);
 
-        //m_scene->OnUpdateEditor(ts, m_editorCamera);
 
-        
-
-        /*glm::mat4 transform = glm::translate(glm::mat4(1.0f), { 0.0f, 0.0f, 0.0f })
-				 * glm::rotate(glm::mat4(1.0f), 0.0f, { 1, 0, 0 })
-                 * glm::rotate(glm::mat4(1.0f), 0.0f, { 0, 1, 0 })
-                 * glm::rotate(glm::mat4(1.0f), 0.0f, { 0, 0, 1 })
-				 * glm::scale(glm::mat4(1.0f), glm::vec3(0.05f));*/
-
-        /*Renderer3D::BeginScene(m_editorCamera);
-        Renderer3D::DrawMeshEntity(transform);
-        Renderer3D::EndScene();*/
-
-        m_scene->OnUpdateEditor(ts, m_editorCamera, m_light);
+        m_scene->OnUpdateEditor(ts, m_editorCamera);
 
         m_editorCamera.OnUpdate(ts);
 
@@ -322,14 +307,6 @@ namespace Adran {
         ImGui::Text("FPS: %d", Renderer2D::s_statics.fps);
         ImGui::Text("TimeStep:%f", Renderer2D::s_statics.timeStep);
         ImGui::Text("DrawCall:%d", Renderer2D::s_statics.drawCallTime);
-
-        float lightStrength = m_light->GetStrength();
-        if (ImGui::DragFloat("LightStrength", &lightStrength), 0.01f)
-            m_light->SetStrength(lightStrength);
-        
-        glm::vec3 lightPos = m_light->GetPosition();
-        if (ImGui::DragFloat3("lightPos", glm::value_ptr(lightPos)), 0.01f)
-            m_light->SetPosition(lightPos);
 
         //ImGui::DragFloat3("Camera Transform", glm::value_ptr(m_cameraEntity->GetComponent<TransformComponent>().position));
 

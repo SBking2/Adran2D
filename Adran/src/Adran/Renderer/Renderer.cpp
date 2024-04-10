@@ -2,7 +2,6 @@
 #include "Renderer.h"
 
 #include "Render2D/Renderer2D.h"
-#include "Render3D/Renderer3D.h"
 
 namespace Adran {
 
@@ -11,8 +10,8 @@ namespace Adran {
 	void Renderer::Init()
 	{
 		RenderCommand::Init();
-		//Renderer2D::Init();
-		Renderer3D::Init();
+		Renderer2D::Init();
+		//Renderer3D::Init();
 	}
 
 	void Renderer::BeginScene(OrthographicCamera& camera)

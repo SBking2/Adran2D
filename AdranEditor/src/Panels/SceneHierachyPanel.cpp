@@ -130,15 +130,9 @@ namespace Adran
 				ImGui::CloseCurrentPopup();
 			}
 
-			if (ImGui::MenuItem("Model"))
+			if (ImGui::MenuItem("Sprite"))
 			{
-				m_selectObject.AddComponent<ModelComponent>();
-				ImGui::CloseCurrentPopup();
-			}
-
-			if (ImGui::MenuItem("Animation"))
-			{
-				m_selectObject.AddComponent<AnimationComponent>();
+				m_selectObject.AddComponent<SpriteComponent>();
 				ImGui::CloseCurrentPopup();
 			}
 
@@ -148,12 +142,14 @@ namespace Adran
 		ImGui::PopItemWidth();
 		DrawComponent<TransformComponent>("Transform", entity, [&](TransformComponent& tc)
 			{
-				DrawVec3Control("Position", tc.position);
-				glm::vec3 rotation = glm::eulerAngles(tc.rotation);
-				rotation = glm::degrees(rotation);
-				DrawVec3Control("Rotation", rotation);
-				tc.rotation = glm::quat(glm::radians(rotation));
-				DrawVec3Control("Scale", tc.scale, 1.0f);
+				DrawVec2Control("Position", tc.position, 1.0f);
+	
+				DrawVec2Control("Scale", tc.scale, 1.0f);
+
+				float rotation = glm::degrees(tc.rotation);
+				//ImGui::DragFloat("Rotation", &rotation);
+				DrawFloatControl("Rotation", rotation, 1.0f);
+				tc.rotation = glm::radians(rotation);
 			});
 		DrawComponent<CameraComponent>("Camera", entity, [&](CameraComponent& cc)
 			{
@@ -210,126 +206,34 @@ namespace Adran
 				}
 			});
 
-		DrawComponent<ModelComponent>("Model", entity, [&](ModelComponent& mc)
+		DrawComponent<SpriteComponent>("Sprite", entity, [&](SpriteComponent& sc)
 			{
-				ImGui::Button("Model", ImVec2(100.0f, 0.0f));
+				if (sc.texture == nullptr)
+				{
+					ImGui::Button("Texture", ImVec2(100.0f, 0.0f));
+				}
+				else
+				{
+					ImGui::ImageButton((ImTextureID)sc.texture->GetRenderID()
+						, { 150.0f, 150.0f }, { 0 ,1 }
+					, { 1, 0 });
+				}
+				
 
 				if (ImGui::BeginDragDropTarget())
 				{
 					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET"))
 					{
 						const wchar_t* path = (const wchar_t*)payload->Data;
-						std::filesystem::path modelPath = std::filesystem::path(g_AssetPath) / path;
-						mc.model = AssetsManager::GetInstance()->GetModel(modelPath.string());
+						std::filesystem::path texturePath = std::filesystem::path(g_AssetPath) / path;
+						sc.texture = AssetsManager::GetInstance()->GetTexture2D(texturePath.string());
 					}
 
 					ImGui::EndDragDropTarget();
 				}
 
-
-				if (mc.model != nullptr)
-				{
-					for (auto& mesh : mc.model->GetMeshes())
-					{
-						if (ImGui::TreeNodeEx((void*)mesh.GetMaterial()->GetName().c_str(), (ImGuiTreeNodeFlags)ImGuiTreeNodeFlags_OpenOnArrow, mesh.GetMaterial()->GetName().c_str()))
-						{
-							ImGui::NextColumn();
-							ImGui::ImageButton((ImTextureID)mesh.GetMaterial()->GetTextureMap(Texture::Type::Diffuse)->GetRenderID()
-								, { 150.0f, 150.0f }, { 0 ,1 }
-							, { 1, 0 });
-
-							if (ImGui::BeginDragDropTarget())
-							{
-								if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET"))
-								{
-									const wchar_t* path = (const wchar_t*)payload->Data;
-									std::filesystem::path texturePath = std::filesystem::path(g_AssetPath) / path;
-									mesh.GetMaterial()->SetTextureMap(AssetsManager::GetInstance()->GetTexture2D(texturePath.string()), Texture::Type::Diffuse);
-								}
-
-								ImGui::EndDragDropTarget();
-							}
-
-							bool IsDUse = mesh.GetMaterial()->GetDiffuseUse();
-							
-							ImGui::Checkbox("DiffuseIsUse", &IsDUse);
-							mesh.GetMaterial()->SetDiffuseUse(IsDUse);
-
-							ImGui::ColorEdit3("DiffuseColor", glm::value_ptr(mesh.GetMaterial()->GetDiffuseColor()));
-							ImGui::Columns(1);
-
-							
-							ImGui::NextColumn();
-							ImGui::ImageButton((ImTextureID)mesh.GetMaterial()->GetTextureMap(Texture::Type::Specular)->GetRenderID()
-								, { 50.0f, 50.0f }, { 0 ,1 }
-							, { 1, 0 });
-
-							if (ImGui::BeginDragDropTarget())
-							{
-								if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET"))
-								{
-									const wchar_t* path = (const wchar_t*)payload->Data;
-									std::filesystem::path texturePath = std::filesystem::path(g_AssetPath) / path;
-									mesh.GetMaterial()->SetTextureMap(AssetsManager::GetInstance()->GetTexture2D(texturePath.string()), Texture::Type::Specular);
-								}
-
-								ImGui::EndDragDropTarget();
-							}
-
-							bool IsSUse = mesh.GetMaterial()->GetSpecularUse();
-							
-							ImGui::Checkbox("SpecularIsUse", &IsSUse);
-							mesh.GetMaterial()->SetSpecularUse(IsSUse);
-
-							ImGui::Columns(1);
-							ImGui::TreePop();
-						}
-					}
-
-					if (mc.model->GetBoneMap().size() != 0)
-					{
-						for (auto& bone : mc.model->GetBoneMap())
-						{
-							if (ImGui::TreeNodeEx((void*)bone.second->name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow, bone.second->name.c_str()))
-							{
-								DrawVec3Control("X", bone.second->position);
-								DrawVec3Control("Y", bone.second->rotation);
-								DrawVec3Control("Z", bone.second->scale);
-								
-								glm::mat4 rotationtemp = glm::rotate(glm::mat4(1.0f), bone.second->rotation.x, { 1, 0, 0 })
-									* glm::rotate(glm::mat4(1.0f), bone.second->rotation.y, { 0, 1, 0 })
-									* glm::rotate(glm::mat4(1.0f), bone.second->rotation.z, { 0, 0, 1 });
-
-								 bone.second->offset = glm::translate(glm::mat4(1.0f), bone.second->position)
-									* rotationtemp
-									* glm::scale(glm::mat4(1.0f), bone.second->scale);
-
-								 bone.second->ReCulate();
-
-								ImGui::TreePop();
-							}
-
-						}
-					}
-				}
+				ImGui::ColorEdit4("Color", glm::value_ptr(sc.color));
 			});
-
-			DrawComponent<AnimationComponent>("Animation", entity, [&](AnimationComponent& ac)
-				{
-					ImGui::Button("Animation", ImVec2(100.0f, 0.0f));
-
-					if (ImGui::BeginDragDropTarget())
-					{
-						if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET"))
-						{
-							const wchar_t* path = (const wchar_t*)payload->Data;
-							std::filesystem::path animationPath = std::filesystem::path(g_AssetPath) / path;
-							ac.animation = CreateRef<Animation>(animationPath.string());
-						}
-
-						ImGui::EndDragDropTarget();
-					}
-				});
 		
 	}
 
@@ -375,7 +279,7 @@ namespace Adran
 		}
 	}
 
-	void SceneHierachyPanel::DrawVec3Control(const std::string& label, glm::vec3& value, float resetValue, float columWidth)
+	void SceneHierachyPanel::DrawVec2Control(const std::string& label, glm::vec2& value, float resetValue, float columWidth)
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		auto boldFont = io.Fonts->Fonts[0];
@@ -387,7 +291,7 @@ namespace Adran
 		ImGui::Text(label.c_str());
 		ImGui::NextColumn();
 
-		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+		ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
 		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
 
 		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
@@ -428,22 +332,49 @@ namespace Adran
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
 
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.2f, 1.0f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.6f, 1.0f });
+		ImGui::PopStyleVar();
+
+		ImGui::Columns(1);
+
+		ImGui::PopID();
+	}
+	
+	void SceneHierachyPanel::DrawFloatControl(const std::string& label, float& value, float resetValue, float columWidth)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		auto boldFont = io.Fonts->Fonts[0];
+
+		ImGui::PushID(label.c_str());
+
+		ImGui::Columns(2);
+		ImGui::SetColumnWidth(0, columWidth);
+		ImGui::Text(label.c_str());
+		ImGui::NextColumn();
+
+		ImGui::PushMultiItemsWidths(1, ImGui::CalcItemWidth());
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
+
+		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
+
+		//button—˘ Ω…Ë÷√
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.25f, 0.1, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 1.0f, 0.2f, 0.2f, 1.0f });
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.6f, 0.1f, 0.15f, 1.0f });
 
 		ImGui::PushFont(boldFont);
 
-		if (ImGui::Button("Z", buttonSize))
-			value.z = resetValue;
+		if (ImGui::Button("X", buttonSize))
+			value = resetValue;
 
 		ImGui::PopFont();
 		ImGui::PopStyleColor(3);
 
 		ImGui::SameLine();
-		ImGui::DragFloat("##Z", &value.z, 0.1f);
+		ImGui::DragFloat("##X", &value, 0.1f);
 		ImGui::PopItemWidth();
 		ImGui::SameLine();
+
 
 		ImGui::PopStyleVar();
 

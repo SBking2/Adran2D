@@ -53,7 +53,6 @@ namespace Adran
 		int m_horverdEntity = -1;
 		Ref<SceneHierachyPanel> m_hierachyPanel;
 		Ref<ContentBroserPanel> m_contentPanel;
-		Ref<Light> m_light;
 
 		EditorCamera m_editorCamera;
 	private:

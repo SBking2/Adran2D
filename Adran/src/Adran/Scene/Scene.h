@@ -2,7 +2,6 @@
 #include <entt.hpp>
 #include"Adran\Core\TimeStep.h"
 #include "Adran\Renderer\Camera\EditorCamera.h"
-#include "Adran/Renderer/RenderObject/Light.h"
 namespace Adran
 {
 	class Entity;
@@ -21,9 +20,8 @@ namespace Adran
 		Entity CreateEntity(std::string name = "GameObject");
 		void DestroyEntity(Entity entity);
 		entt::registry& Reg() { return m_registry; };
-		//void OnUpdate(TimeStep ts);
-		//void OnUpdateEditor(TimeStep ts, EditorCamera& camera);
-		void OnUpdateEditor(TimeStep ts, EditorCamera& camera, const Ref<Light>& light);
+		void OnUpdate(TimeStep ts);
+		void OnUpdateEditor(TimeStep ts, EditorCamera& camera);
 		void SetViewport(uint32_t width, uint32_t height);
 	public: 
 		SceneState sceneState = SceneState::Editor;

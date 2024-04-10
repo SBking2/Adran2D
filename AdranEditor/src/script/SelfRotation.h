@@ -18,7 +18,7 @@ public:
 	virtual void OnUpdate(TimeStep ts) override
 	{
 		auto& transform = GetComponent<TransformComponent>();
-		transform.rotation.z += speed * ts;
+		transform.rotation += speed * ts;
 	}
 
 	virtual void OnDestory() override
