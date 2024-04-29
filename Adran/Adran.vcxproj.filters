@@ -204,6 +204,9 @@
     <ClInclude Include="src\Adran\Scene\Script.h">
       <Filter>src\Adran\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Adran\Scene\ScriptEngine.h">
+      <Filter>src\Adran\Scene</Filter>
+    </ClInclude>
     <ClInclude Include="src\Adran\Utlis\PlatformUtlis.h">
       <Filter>src\Adran\Utlis</Filter>
     </ClInclude>
@@ -1491,6 +1494,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\Adran\Animation\Animation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Adran\Core\Application.cpp">
@@ -1574,6 +1578,9 @@
     <ClCompile Include="src\Adran\Scene\SceneSerialize.cpp">
       <Filter>src\Adran\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Adran\Scene\ScriptEngine.cpp">
+      <Filter>src\Adran\Scene</Filter>
+    </ClCompile>
     <ClCompile Include="src\AdranPreCompile.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -1613,5 +1620,6 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\Adran\Animation\Animation.cpp" />
   </ItemGroup>
 </Project>

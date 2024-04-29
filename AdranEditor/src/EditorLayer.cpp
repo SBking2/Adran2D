@@ -17,8 +17,9 @@ namespace Adran {
 
     const std::filesystem::path g_AssetPath = "assets";
 
-    EditorLayer::EditorLayer(): Adran::Layer("Editor")
+    EditorLayer::EditorLayer():Adran::Layer("Editor")
     {
+
     }
 
     void EditorLayer::OnAttach()
@@ -51,8 +52,26 @@ namespace Adran {
             m_scene = CreateRef<Scene>();
             m_startIcon = Texture2D::Create("assets/Icon/start.png");
             m_pauseIcon = Texture2D::Create("assets/Icon/pause.png");
-            /*m_cameraEntity = CreateRef<Entity>(m_scene->CreateEntity("Camera"));
-            m_cameraEntity->AddComponent<CameraComponent>((float)Application::GetInstance().GetWindow().GetWidth() / (float)Application::GetInstance().GetWindow().GetHeight());
+            /*auto AnimationTestEntity = CreateRef<Entity>(m_scene->CreateEntity("Anim"));
+            AnimationTestEntity->AddComponent<SpriteComponent>(AssetsManager::GetInstance()->GetTexture2D("assets/Icon/folder.png"));
+            auto& ac = AnimationTestEntity->AddComponent<AnimationComponent>(3.0f, 60);
+            ac.animation->AddScaleKeyFrame(20, { 2.0f, 0.5f });
+            ac.animation->AddScaleKeyFrame(0, { 1.0f, 1.5f });
+            ac.animation->AddScaleKeyFrame(40, { -0.5f, 2.0f });
+            ac.animation->AddTextureKeyFrame(20, "assets/textures/a.png");
+            ac.animation->AddTextureKeyFrame(0, "assets/textures/casual.png");
+            ac.animation->AddTextureKeyFrame(40, "assets/textures/m.png");*/
+            auto caozhi = CreateRef<Entity>(m_scene->CreateEntity("CaoZhiJin"));
+            caozhi->AddComponent<SpriteComponent>();
+            auto& ac = caozhi->AddComponent<AnimationComponent>(0.6, 6);
+            ac.animation->AddTextureKeyFrame(0, "assets/Animation/1.png");
+            ac.animation->AddTextureKeyFrame(1, "assets/Animation/2.png");
+            ac.animation->AddTextureKeyFrame(2, "assets/Animation/3.png");
+            ac.animation->AddTextureKeyFrame(3, "assets/Animation/4.png");
+            ac.animation->AddTextureKeyFrame(4, "assets/Animation/5.png");
+            ac.animation->AddTextureKeyFrame(5, "assets/Animation/6.png");
+            //ac.animation->AddScaleKeyFrame(59, { 1.0f, 1.0f });
+            /*m_cameraEntity->AddComponent<CameraComponent>((float)Application::GetInstance().GetWindow().GetWidth() / (float)Application::GetInstance().GetWindow().GetHeight());
             m_cameraEntity->AddComponent<ScriptComponent>().Bind<CameraController>();
 
             auto square = m_scene->CreateEntity("SBKING CUBE");
@@ -81,7 +100,7 @@ namespace Adran {
 
        m_hierachyPanel = CreateRef<SceneHierachyPanel>(m_scene);
        m_contentPanel = CreateRef<ContentBroserPanel>();
-       m_editorCamera = EditorCamera( 30.0f, 1.778f, 0.1f, 1000.0f );
+       m_editorCamera = CreateRef<EditorCamera>((float)Application::GetInstance().GetWindow().GetWidth() / (float)Application::GetInstance().GetWindow().GetWidth());
     }
 
     void EditorLayer::OnDetach()
@@ -96,7 +115,7 @@ namespace Adran {
         {
             m_frameBuffer->ReSize((uint32_t)m_viewSize.x, (uint32_t)m_viewSize.y);
             m_scene->SetViewport((uint32_t)m_viewSize.x, (uint32_t)m_viewSize.y);
-            m_editorCamera.SetViewportSize(m_viewSize.x, m_viewSize.y);
+            m_editorCamera->SetViewport(m_viewSize.x, m_viewSize.y);
 
         }
 
@@ -133,9 +152,9 @@ namespace Adran {
         m_frameBuffer->ClearAttachment(1, -1);
 
 
-        m_scene->OnUpdateEditor(ts, m_editorCamera);
+        m_scene->OnUpdateEditor(ts, *m_editorCamera);
 
-        m_editorCamera.OnUpdate(ts);
+        m_editorCamera->OnUpdate(ts);
 
         //获取鼠标位置
         auto [mx, my] = ImGui::GetMousePos();
@@ -164,7 +183,7 @@ namespace Adran {
     void EditorLayer::OnEvent(Event& event)
     {
 	    EventDispatcher dispatcher(event);
-        m_editorCamera.OnEvent(event);
+        m_editorCamera->OnEvent(event);
 	    dispatcher.Dispatch<KeyPressedEvent>(AR_BIND_EVENT_FN(EditorLayer::OnKeyPressedEvent));
         dispatcher.Dispatch<MouseButtonPressedEvent>(AR_BIND_EVENT_FN(EditorLayer::OnMousePressedEvent));
     }
@@ -351,15 +370,15 @@ namespace Adran {
 
         if(selectedEntity  && m_ImGuizmoType != -1)
         {
-            ImGuizmo::SetOrthographic(false);
+            ImGuizmo::SetOrthographic(true);
             ImGuizmo::SetDrawlist();
 
             float windowWidth = (float)ImGui::GetWindowWidth();
             float windowHeight = (float)ImGui::GetWindowHeight();
             ImGuizmo::SetRect(m_viewportBounds[0].x, m_viewportBounds[0].y, m_viewportBounds[1].x - m_viewportBounds[0].x, m_viewportBounds[1].y - m_viewportBounds[0].y);
             
-            const glm::mat4& cameraProjection = m_editorCamera.GetProjection();
-            glm::mat4 cameraView = m_editorCamera.GetViewMatrix();
+            const glm::mat4& cameraProjection = m_editorCamera->GetProjectionMatrix();
+            glm::mat4 cameraView = m_editorCamera->GetViewMatrix();
 
             auto& tc = selectedEntity.GetComponent<TransformComponent>();
             glm::mat4 transform = (glm::mat4)tc;

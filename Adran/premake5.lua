@@ -30,7 +30,7 @@ project "Adran"
 
 	libdirs
 	{
-		"vendor/assimp/Build/lib/Debug"
+		"vendor/mono/lib/Debug"
 	}
 
 	includedirs
@@ -45,7 +45,8 @@ project "Adran"
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.ImGuizmo}",
-		"%{IncludeDir.assimp}"
+		"%{IncludeDir.mono}",
+		"vendor/mono/lib/Debug"
 	}
 
 	links
@@ -55,7 +56,7 @@ project "Adran"
 		"ImGui",
 		"yaml-cpp",
 		"opengl32.lib",
-		"assimp-vc143-mtd.lib"
+		"mono-2.0-sgen.lib"
 	}
 
 	filter "files:vendor/ImGuizmo/**.cpp"

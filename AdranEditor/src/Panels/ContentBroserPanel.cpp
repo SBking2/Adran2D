@@ -18,10 +18,9 @@ namespace Adran
 	void ContentBroserPanel::OnImGuiRender()
 	{
 		ImGui::Begin("Directory");
-
 		if (m_currentDiretory != std::filesystem::path(m_baseDiretory))
 		{
-			if (ImGui::Button("<-"))
+			if (ImGui::Button("<-Back"))
 			{
 				m_currentDiretory = m_currentDiretory.parent_path();
 			}
@@ -75,7 +74,7 @@ namespace Adran
 			ImGui::PopID();
 		}
 		ImGui::Columns(1);
-
 		ImGui::End();
+
 	}
 }

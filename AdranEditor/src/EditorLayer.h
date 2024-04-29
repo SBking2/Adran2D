@@ -54,7 +54,7 @@ namespace Adran
 		Ref<SceneHierachyPanel> m_hierachyPanel;
 		Ref<ContentBroserPanel> m_contentPanel;
 
-		EditorCamera m_editorCamera;
+		Ref<EditorCamera> m_editorCamera;
 	private:
 		//Editor Icon
 		Ref<Texture2D> m_startIcon;

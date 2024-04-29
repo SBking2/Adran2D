@@ -14,7 +14,7 @@ namespace Adran
 		int width, height, channels;
 		stbi_set_flip_vertically_on_load(true);
 		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-		//AR_CORE_ASSERT(data, "Õº∆¨º”‘ÿ ß∞‹!");
+		AR_CORE_ASSERT(data, "Õº∆¨º”‘ÿ ß∞‹!");
 		m_width = width;
 		m_height = height;
 		m_channels = channels;
@@ -28,10 +28,11 @@ namespace Adran
 	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height, void* data)
 		:m_width(width), m_height(height)
 	{
+		m_channels = 4;
 		Init();
 		if (data)
 		{
-			SetData(data, m_width * m_height * m_channels);
+			SetData(data, sizeof(uint32_t));
 		}
 	}
 
@@ -43,7 +44,7 @@ namespace Adran
 	void OpenGLTexture2D::SetData(void* data, uint32_t size)
 	{
 		uint32_t bpp = m_dataFormat == GL_RGBA ? 4 : 3;
-		AR_CORE_ASSERT(size == m_width * m_height * m_channels, "data must be entire texture!");
+		AR_CORE_ASSERT(size == m_width * m_height * bpp, "data must be entire texture!");
 		glTextureSubImage2D(m_renderID, 0, 0, 0, m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
 	}
 

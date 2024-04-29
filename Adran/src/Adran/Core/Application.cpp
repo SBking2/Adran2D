@@ -24,6 +24,7 @@ namespace Adran {
 		m_window->SetEventCallback(AR_BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
+		ScriptEngine::Init();
 
 		m_imGuiLayer = new ImGuiLayer();
 		PushOverlay(m_imGuiLayer);

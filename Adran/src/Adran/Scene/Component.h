@@ -3,6 +3,7 @@
 #include "Script.h"
 #include "Adran/Renderer/RenderObject/Texture.h"
 #include "Adran/Core/UUID.h"
+#include "Adran/Animation/Animation.h"
 
 #include<glm\glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -88,6 +89,18 @@ namespace Adran
 				sc->instance = nullptr;
 			};
 		}
+	};
+
+	struct AnimationComponent
+	{
+		Ref<Animation> animation;
+		AnimationComponent() = default;
+		AnimationComponent(const AnimationComponent&) = default;
+		AnimationComponent(float duration, uint32_t samples)
+		{
+			animation = CreateRef<Animation>(duration, samples);
+		};
+		AnimationComponent(const Ref<Animation>& animation) :animation(animation) {  }
 	};
 
 

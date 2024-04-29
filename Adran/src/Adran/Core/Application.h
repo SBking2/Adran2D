@@ -10,6 +10,7 @@
 #include "Adran/Renderer/RenderObject/Buffer.h"
 #include "Adran/Renderer/RenderObject/VertexArray.h"
 #include "Adran/Renderer/Renderer.h"
+#include "Adran/Scene/ScriptEngine.h"
 
 #include "Adran/Core/TimeStep.h"
 

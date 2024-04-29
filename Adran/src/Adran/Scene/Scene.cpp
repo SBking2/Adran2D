@@ -4,6 +4,7 @@
 #include "Component.h"
 #include "Entity.h"
 #include <glm/glm.hpp>
+#include "Adran/Core/AssetsManager.h"
 #include "Adran\Renderer\Render2D\Renderer2D.h"
 //#include "Adran\Renderer\Render3D\Renderer3D.h"
 #include "Adran/Renderer/Camera/SceneCamera.h"
@@ -98,6 +99,18 @@ namespace Adran
 			for (auto entity : group)
 			{
 				auto& [transform, sprite] = group.get<TransformComponent, SpriteComponent>(entity);
+				auto& AnimEntity = Entity{ entity, this };
+				if (AnimEntity.HasComponent<AnimationComponent>())
+				{
+					auto& ac = AnimEntity.GetComponent<AnimationComponent>();
+					ac.animation->OnUpdate(ts);
+					transform.position = ac.animation->GetPosition();
+					transform.rotation = ac.animation->GetRotation();
+					transform.scale = ac.animation->GetScale();
+					std::string spritePath = ac.animation->GetTexturePath();
+					if (!spritePath.empty())
+						sprite.texture = AssetsManager::GetInstance()->GetTexture2D(spritePath);
+				}
 				Renderer2D::DrawQuadEntity((const glm::mat4&)transform, sprite.color, (int)entity, sprite.texture);
 			}
 

@@ -134,7 +134,7 @@ namespace Adran
 	}
 	void Renderer2D::BeginScene(const EditorCamera& camera)
 	{
-		glm::mat4 viewProj = camera.GetViewProjection();
+		glm::mat4 viewProj = camera.GetViewProjectionMatrix();
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->UploadUniformMat4("u_ViewProjection",  viewProj);
 

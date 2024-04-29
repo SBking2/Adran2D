@@ -216,6 +216,18 @@ namespace Adran
 					cc.camera.SetPerFar(camera["PerFar"].as<float>());
 				}
 
+				auto sprite = entity["SpriteComponent"];
+
+				if (sprite)
+				{
+					auto& sc = gameObject.AddComponent<SpriteComponent>();
+					if (sprite["TexturePath"])
+					{
+						sc.texture = AssetsManager::GetInstance()->GetTexture2D(sprite["TexturePath"].as<std::string>());
+					}
+					sc.color = sprite["Color"].as<glm::vec4>();
+				}
+
 			}
 		}
 
@@ -263,6 +275,20 @@ namespace Adran
 			out << YAML::Key << "PerFOV" << YAML::Value << cc.camera.GetPerFOV();
 			out << YAML::Key << "PerNear" << YAML::Value << cc.camera.GetPerNear();
 			out << YAML::Key << "PerFar" << YAML::Value << cc.camera.GetPerFar();
+			out << YAML::EndMap;
+		}
+
+		if (entity.HasComponent<SpriteComponent>())
+		{
+			out << YAML::Key << "SpriteComponent";
+			out << YAML::BeginMap;//Sprite Component
+
+			auto& sc = entity.GetComponent<SpriteComponent>();
+			if (sc.texture != nullptr)
+			{
+				out << YAML::Key << "TexturePath" << YAML::Value << sc.texture->GetPath();
+			}
+			out << YAML::Key << "Color" << YAML::Value << sc.color;
 			out << YAML::EndMap;
 		}
 

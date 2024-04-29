@@ -21,7 +21,7 @@ project "AdranEditor"
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.yaml_cpp}",
-		"%{IncludeDir.assimp}"
+		"%{IncludeDir.mono}"
 	}
 
 

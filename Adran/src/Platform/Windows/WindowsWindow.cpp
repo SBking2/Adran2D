@@ -12,6 +12,7 @@ namespace Adran {
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
+
 		AR_CORE_ERROR("GLFW Error ({0}):{1}", error, description);
 	}
 

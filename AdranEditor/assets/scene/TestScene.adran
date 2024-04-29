@@ -1,0 +1,22 @@
+Scene: Adran Scene
+Entities:
+  - Entity: 2264818474
+    NameComponent:
+      Name: Floder
+    TransformComponent:
+      position: [-1.20000005, 0]
+      rotation: 0
+      scale: [1, 1]
+    SpriteComponent:
+      TexturePath: assets\Icon\folder.png
+      Color: [1, 1, 1, 1]
+  - Entity: 2851080806
+    NameComponent:
+      Name: des
+    TransformComponent:
+      position: [1.10000002, 0]
+      rotation: 0
+      scale: [1, 1]
+    SpriteComponent:
+      TexturePath: assets\Icon\description.png
+      Color: [1, 1, 1, 1]

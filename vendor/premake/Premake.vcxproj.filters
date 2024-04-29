@@ -25,8 +25,8 @@
     <Filter Include="..\AdranEditor">
       <UniqueIdentifier>{7D118082-69DF-7388-5273-E4AE3EE04FED}</UniqueIdentifier>
     </Filter>
-    <Filter Include="..\SandBox">
-      <UniqueIdentifier>{1FF36A1D-0BAB-AC6A-74B2-85C66089475B}</UniqueIdentifier>
+    <Filter Include="..\HandMeat">
+      <UniqueIdentifier>{720CFBA3-DEC1-7399-67B6-6D70D36A6A9D}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -48,8 +48,8 @@
     <None Include="..\..\AdranEditor\premake5.lua">
       <Filter>..\AdranEditor</Filter>
     </None>
-    <None Include="..\..\SandBox\premake5.lua">
-      <Filter>..\SandBox</Filter>
+    <None Include="..\..\HandMeat\premake5.lua">
+      <Filter>..\HandMeat</Filter>
     </None>
     <None Include="..\..\premake5.lua">
       <Filter>..</Filter>

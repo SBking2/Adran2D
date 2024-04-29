@@ -11,5 +11,6 @@ IncludeDir["ImGui"] = "%{wks.location}/Adran/vendor/ImGui"
 IncludeDir["glm"] = "%{wks.location}/Adran/vendor/glm"
 IncludeDir["entt"] = "%{wks.location}/Adran/vendor/entt/include"
 IncludeDir["ImGuizmo"] = "%{wks.location}/Adran/vendor/ImGuizmo"
-IncludeDir["assimp"] = "%{wks.location}/Adran/vendor/assimp/include"
+IncludeDir["mono"] = "%{wks.location}/Adran/vendor/mono/include"
+
 

@@ -210,7 +210,9 @@ namespace Adran
 			{
 				if (sc.texture == nullptr)
 				{
-					ImGui::Button("Texture", ImVec2(100.0f, 0.0f));
+					ImGui::ImageButton((ImTextureID)1
+						, { 150.0f, 150.0f }, { 0 ,1 }
+					, { 1, 0 });
 				}
 				else
 				{

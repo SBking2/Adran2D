@@ -7,56 +7,30 @@
 
 #include <glfw/glfw3.h>
 
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
 namespace Adran {
-
-	EditorCamera::EditorCamera(float fov, float aspectRatio, float nearClip, float farClip)
-		: m_FOV(fov), m_AspectRatio(aspectRatio), m_NearClip(nearClip), m_FarClip(farClip), Camera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip))
+	EditorCamera::EditorCamera(float aspectRatio)
+		:m_aspectRatio(aspectRatio), m_projectionMatrix(glm::ortho(-m_aspectRatio * m_zoomlevel, m_aspectRatio* m_zoomlevel, -m_zoomlevel, m_zoomlevel, -1.0f, 1.0f))
+		, m_viewMatrix(1.0f)
 	{
-		UpdateView();
+		m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
+		m_position = glm::vec3(0.0f);
 	}
 
-	void EditorCamera::UpdateProjection()
+	void EditorCamera::SetViewport(uint32_t width, uint32_t height)
 	{
-		m_AspectRatio = m_ViewportWidth / m_ViewportHeight;
-		m_projection = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearClip, m_FarClip);
+		m_aspectRatio = (float)width / (float)height;
+		m_projectionMatrix = glm::ortho(-m_aspectRatio * m_zoomlevel, m_aspectRatio * m_zoomlevel, -m_zoomlevel, m_zoomlevel, -1.0f, 1.0f);
+		m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
 	}
 
-	void EditorCamera::UpdateView()
+	void EditorCamera::RecalculateViewMatrix()
 	{
-		// m_Yaw = m_Pitch = 0.0f; // Lock the camera's rotation
-		m_Position = CalculatePosition();
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_position);
 
-		glm::quat orientation = GetOrientation();
-		m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Position) * glm::toMat4(orientation);
-		m_ViewMatrix = glm::inverse(m_ViewMatrix);
-	}
-
-	std::pair<float, float> EditorCamera::PanSpeed() const
-	{
-		float x = std::min(m_ViewportWidth / 1000.0f, 2.4f); // max = 2.4f
-		float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
-
-		float y = std::min(m_ViewportHeight / 1000.0f, 2.4f); // max = 2.4f
-		float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
-
-		return { xFactor, yFactor };
-	}
-
-	float EditorCamera::RotationSpeed() const
-	{
-		return 0.8f;
-	}
-
-	float EditorCamera::ZoomSpeed() const
-	{
-		float distance = m_Distance * 0.2f;
-		distance = std::max(distance, 0.0f);
-		float speed = distance * distance;
-		speed = std::min(speed, 100.0f); // max speed = 100
-		return speed;
+		m_viewMatrix = glm::inverse(transform);
+		m_viewProjectionMatrix = m_projectionMatrix * m_viewMatrix;
 	}
 
 	void EditorCamera::OnUpdate(TimeStep ts)
@@ -64,81 +38,37 @@ namespace Adran {
 		if (Input::IsKeyPressed(KeyCode::AR_LEFT_ALT))
 		{
 			const glm::vec2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
-			glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
-			m_InitialMousePosition = mouse;
+			glm::vec2 delta = (mouse - m_initMousePosition) * 0.003f;
+			m_initMousePosition = mouse;
 
-			if (Input::IsMouseButtonPressed(MouseCode::MOUSE_BUTTON_MIDDLE))
-				MousePan(delta);
-			else if (Input::IsMouseButtonPressed(MouseCode::MOUSE_BUTTON_LEFT))
-				MouseRotate(delta);
-			else if (Input::IsMouseButtonPressed(MouseCode::MOUSE_BUTTON_RIGHT))
-				MouseZoom(delta.y);
+			if (Input::IsMouseButtonPressed(MouseCode::MOUSE_BUTTON_LEFT))
+			{
+				m_position.x +=- delta.x;
+				m_position.y += delta.y;
+			}
 		}
 
-		UpdateView();
+		RecalculateViewMatrix();
+
 	}
 
-	void EditorCamera::OnEvent(Event& e)
+	void EditorCamera::OnEvent(Event& event)
 	{
-		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<MouseScrolledEvent>(AR_BIND_EVENT_FN(EditorCamera::OnMouseScroll));
+		EventDispatcher dispatcher(event);
+
+		dispatcher.Dispatch<MouseScrolledEvent>(AR_BIND_EVENT_FN(EditorCamera::MouseScroller));
+
 	}
 
-	bool EditorCamera::OnMouseScroll(MouseScrolledEvent& e)
+	bool EditorCamera::MouseScroller(MouseScrolledEvent& event)
 	{
-		float delta = e.GetYOffset() * 0.1f;
-		MouseZoom(delta);
-		UpdateView();
-		return false;
+		m_zoomlevel -= event.GetYOffset() * m_zoomSpeed;
+		if (m_zoomlevel < 0.5f)
+			m_zoomlevel = 0.5f;
+
+		return true;
 	}
 
-	void EditorCamera::MousePan(const glm::vec2& delta)
-	{
-		auto [xSpeed, ySpeed] = PanSpeed();
-		m_FocalPoint += -GetRightDirection() * delta.x * xSpeed * m_Distance;
-		m_FocalPoint += GetUpDirection() * delta.y * ySpeed * m_Distance;
-	}
-
-	void EditorCamera::MouseRotate(const glm::vec2& delta)
-	{
-		float yawSign = GetUpDirection().y < 0 ? -1.0f : 1.0f;
-		m_Yaw += yawSign * delta.x * RotationSpeed();
-		m_Pitch += delta.y * RotationSpeed();
-	}
-
-	void EditorCamera::MouseZoom(float delta)
-	{
-		m_Distance -= delta * ZoomSpeed();
-		if (m_Distance < 1.0f)
-		{
-			m_FocalPoint += GetForwardDirection();
-			m_Distance = 1.0f;
-		}
-	}
-
-	glm::vec3 EditorCamera::GetUpDirection() const
-	{
-		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 1.0f, 0.0f));
-	}
-
-	glm::vec3 EditorCamera::GetRightDirection() const
-	{
-		return glm::rotate(GetOrientation(), glm::vec3(1.0f, 0.0f, 0.0f));
-	}
-
-	glm::vec3 EditorCamera::GetForwardDirection() const
-	{
-		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 0.0f, -1.0f));
-	}
-
-	glm::vec3 EditorCamera::CalculatePosition() const
-	{
-		return m_FocalPoint - GetForwardDirection() * m_Distance;
-	}
-
-	glm::quat EditorCamera::GetOrientation() const
-	{
-		return glm::quat(glm::vec3(-m_Pitch, -m_Yaw, 0.0f));
-	}
 
 }
+
