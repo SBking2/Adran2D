@@ -1,0 +1,32 @@
+Scene: Adran Scene
+Entities:
+  - Entity: 2426814613
+    NameComponent:
+      Name: CaoZhiJin
+    TransformComponent:
+      position: [0, 0]
+      rotation: 0
+      scale: [1, 1]
+    SpriteComponent:
+      Color: [1, 1, 1, 1]
+  - Entity: 4250245160
+    NameComponent:
+      Name: 3
+    TransformComponent:
+      position: [0, 0]
+      rotation: 0
+      scale: [1, 1]
+  - Entity: 2763690204
+    NameComponent:
+      Name: 2
+    TransformComponent:
+      position: [0, 0]
+      rotation: 0
+      scale: [1, 1]
+  - Entity: 2905286064
+    NameComponent:
+      Name: 1
+    TransformComponent:
+      position: [0, 0]
+      rotation: 0
+      scale: [1, 1]

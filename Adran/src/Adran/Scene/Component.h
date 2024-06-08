@@ -17,6 +17,13 @@ namespace Adran
 		IDComponent(const IDComponent&) = default;
 	};
 
+	struct RenderNumComponent
+	{
+		uint32_t number = 0;
+		RenderNumComponent() = default;
+		RenderNumComponent(const RenderNumComponent&) = default;
+	};
+
 	struct TransformComponent
 	{
 		glm::vec2 position = { 0.0f, 0.0f};
@@ -61,6 +68,8 @@ namespace Adran
 	struct SpriteComponent 
 	{
 		Ref<Texture2D> texture = nullptr;
+		glm::vec2 minTexCoords = { 0.0f, 0.0f };
+		glm::vec2 maxTexCoords = { 1.0f, 1.0f };
 		glm::vec4 color = glm::vec4(1.0f);
 
 		SpriteComponent() = default;
@@ -103,5 +112,13 @@ namespace Adran
 		AnimationComponent(const Ref<Animation>& animation) :animation(animation) {  }
 	};
 
+	template<typename... Component>
+	struct ComponentGroup
+	{
+	};
 
+	using AllComponents =
+		ComponentGroup<TransformComponent, SpriteComponent
+		, CameraComponent, ScriptComponent,
+		SpriteComponent, AnimationComponent>;
 }

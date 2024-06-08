@@ -30,11 +30,17 @@ namespace Adran
 	{
 		ImGui::Begin("Hierachy");
 		
-		auto& nc = m_scene->Reg().view<entt::entity>();
+		/*auto& nc = m_scene->Reg().view<entt::entity>();
+
 		for (auto& entity : nc)
 		{
-			DrawEntityNode({entity, m_scene.get()});
-		}
+			DrawEntityNode({ entity, m_scene.get() });
+		}*/
+
+		m_scene->FuncOnAllEntity([&](Entity entity)
+			{
+				DrawEntityNode(entity);
+			});
 
 		if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered())
 		{
@@ -58,8 +64,6 @@ namespace Adran
 		if (m_selectObject)
 		{
 			DrawProperties(m_selectObject);
-
-			
 		}
 		ImGui::End();
 	}
@@ -112,98 +116,50 @@ namespace Adran
 			if (ImGui::InputText("##Name", buffer, sizeof(buffer))) {
 				tag = std::string(buffer);
 			}
-
 		}
 
 		ImGui::SameLine();
-		ImGui::PushItemWidth(-1);
 
-		if (ImGui::Button("Add Component"))
-			ImGui::OpenPopup("AddComponent");
+		if (entity.HasComponent<RenderNumComponent>()) {
+			auto& numCom = entity.GetComponent<RenderNumComponent>();
 
-		if (ImGui::BeginPopup("AddComponent"))
-		{
-			if (ImGui::MenuItem("Camera"))
-			{
-				float aspectRatio = (float)Application::GetInstance().GetWindow().GetWidth() / (float)Application::GetInstance().GetWindow().GetHeight();
-				m_selectObject.AddComponent<CameraComponent>(aspectRatio);
-				ImGui::CloseCurrentPopup();
+			char buffer[20];
+			snprintf(buffer, sizeof(buffer), "%u", numCom.number);
+			ImGuiInputTextFlags flags = ImGuiInputTextFlags_CharsDecimal | ImGuiInputTextFlags_CharsNoBlank;
+
+			if (ImGui::InputText("##RenderNum", buffer, sizeof(buffer), flags)) {
+				numCom.number = strtoul(buffer, NULL, 10);
 			}
-
-			if (ImGui::MenuItem("Sprite"))
-			{
-				m_selectObject.AddComponent<SpriteComponent>();
-				ImGui::CloseCurrentPopup();
-			}
-
-			ImGui::EndPopup();
 		}
 
-		ImGui::PopItemWidth();
+		
+		
 		DrawComponent<TransformComponent>("Transform", entity, [&](TransformComponent& tc)
 			{
-				DrawVec2Control("Position", tc.position, 1.0f);
+				DrawVec2Control("Position", tc.position, 0.0f);
 	
 				DrawVec2Control("Scale", tc.scale, 1.0f);
 
 				float rotation = glm::degrees(tc.rotation);
 				//ImGui::DragFloat("Rotation", &rotation);
-				DrawFloatControl("Rotation", rotation, 1.0f);
+				DrawFloatControl("Rotation", rotation, 0.0f);
 				tc.rotation = glm::radians(rotation);
 			});
 		DrawComponent<CameraComponent>("Camera", entity, [&](CameraComponent& cc)
 			{
 				ImGui::Checkbox("Primary", &cc.isPrimary);
 
-				const char* cameraTypeString[] = { "Orthgraphic", "Perspective" };
-				const char* currentTypeString = cameraTypeString[(int)cc.camera.GetSceneCameraType()];
-				if (ImGui::BeginCombo("Type", currentTypeString))
-				{
-					for (int i = 0; i < 2; i++)
-					{
-						bool isSeleted = currentTypeString == cameraTypeString[i];
-						if (ImGui::Selectable(cameraTypeString[i], isSeleted))
-						{
-							currentTypeString = cameraTypeString[i];
-							cc.camera.SetType((SceneCamera::SceneCameraType)i);
-						}
+				float size = cc.camera.GetOrthSize();
+				if (ImGui::DragFloat("Size", &size), 0.01f)
+					cc.camera.SetOrthSize(size);
 
-						if (isSeleted)
-							ImGui::SetItemDefaultFocus();
-					}
+				float Near = cc.camera.GetOrthNear();
+				if (ImGui::DragFloat("Near", &Near), 0.01f)
+					cc.camera.SetOrthNear(Near);
 
-					ImGui::EndCombo();
-				}
-
-				if (cc.camera.GetSceneCameraType() == SceneCamera::SceneCameraType::orthgraphic)
-				{
-					float size = cc.camera.GetOrthSize();
-					if (ImGui::DragFloat("Size", &size), 0.01f)
-						cc.camera.SetOrthSize(size);
-
-					float Near = cc.camera.GetOrthNear();
-					if (ImGui::DragFloat("Near", &Near), 0.01f)
-						cc.camera.SetOrthNear(Near);
-
-					float Far = cc.camera.GetOrthFar();
-					if (ImGui::DragFloat("Far", &Far), 0.01f)
-						cc.camera.SetOrthFar(Far);
-				}
-				else
-				{
-					float fov = cc.camera.GetPerFOV();
-					if (ImGui::DragFloat("FOV", &fov), 0.01f)
-						cc.camera.SetPerFOV(fov);
-
-					float Near = cc.camera.GetPerNear();
-					if (ImGui::DragFloat("Near", &Near), 0.01f)
-						cc.camera.SetPerNear(Near);
-
-					float Far = cc.camera.GetPerFar();
-					if (ImGui::DragFloat("Far", &Far), 0.01f)
-						cc.camera.SetPerFar(Far);
-
-				}
+				float Far = cc.camera.GetOrthFar();
+				if (ImGui::DragFloat("Far", &Far), 0.01f)
+					cc.camera.SetOrthFar(Far);
 			});
 
 		DrawComponent<SpriteComponent>("Sprite", entity, [&](SpriteComponent& sc)
@@ -236,6 +192,31 @@ namespace Adran
 
 				ImGui::ColorEdit4("Color", glm::value_ptr(sc.color));
 			});
+
+		ImGui::PushItemWidth(-1);
+
+		if (ImGui::Button("Add Component"))
+			ImGui::OpenPopup("AddComponent");
+
+		if (ImGui::BeginPopup("AddComponent"))
+		{
+			if (ImGui::MenuItem("Camera"))
+			{
+				float aspectRatio = (float)Application::GetInstance().GetWindow().GetWidth() / (float)Application::GetInstance().GetWindow().GetHeight();
+				m_selectObject.AddComponent<CameraComponent>(aspectRatio);
+				ImGui::CloseCurrentPopup();
+			}
+
+			if (ImGui::MenuItem("Sprite"))
+			{
+				m_selectObject.AddComponent<SpriteComponent>();
+				ImGui::CloseCurrentPopup();
+			}
+
+			ImGui::EndPopup();
+		}
+
+		ImGui::PopItemWidth();
 		
 	}
 

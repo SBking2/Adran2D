@@ -132,6 +132,17 @@ namespace Adran
 
 		s_statics.drawCallTime = 0;
 	}
+
+	void Renderer2D::BeginScene(const glm::mat4& transform)
+	{
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->UploadUniformMat4("u_ViewProjection", glm::mat4(0.0f));
+
+		StartBatch();
+
+		s_statics.drawCallTime = 0;
+	}
+
 	void Renderer2D::BeginScene(const EditorCamera& camera)
 	{
 		glm::mat4 viewProj = camera.GetViewProjectionMatrix();
@@ -156,322 +167,15 @@ namespace Adran
 		Flush();
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
-	{
-		DrawQuad({ position.x, position.y, 0.0f }, size, color);
-	}
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
-	{
-		//计算transfrom
-		glm::mat4 transfrom = glm::translate(glm::mat4(1.0f), position)
-			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-
-		DrawQuad(transfrom, color);
-	}
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, const glm::vec4& color, float tilingFactor)
-	{
-		DrawQuad({ position.x, position.y, 0.0f }, size, texture, color,tilingFactor);
-	}
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, const glm::vec4& color, float tilingFactor)
-	{
-
-		glm::mat4 transfrom = glm::translate(glm::mat4(1.0f), position)
-			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-		//数据
-		DrawQuad(transfrom, color, texture);
-	}
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture>& texture, const glm::vec4& color, float tilingFactor)
-	{
-		DrawQuad({ position.x, position.y, 0.0f }, size, texture, color, tilingFactor);
-	}
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture>& texture, const glm::vec4& color, float tilingFactor)
-	{
-		float texIndex = 0.0f;
-		//首先处理Tex
-		for (uint32_t i = 1; i < s_Data.TexIndex; i++)
-		{
-			if (texture->GetTexture()->GetRenderID() == s_Data.TexSlots[i]->GetRenderID())
-			{
-				texIndex = (float)i;
-				break;
-			}
-		}
-		if (texIndex == 0.0f)
-		{
-			s_Data.TexSlots[s_Data.TexIndex] = texture->GetTexture();
-			texIndex = (float)s_Data.TexIndex;
-			s_Data.TexIndex++;
-		}
-
-		glm::mat4 transfrom = glm::translate(glm::mat4(1.0f), position)
-			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-
-		//数据
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[0];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = texture->GetCoords()[3];
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[1];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = texture->GetCoords()[2];
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[2];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = texture->GetCoords()[1];
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[3];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = texture->GetCoords()[0];
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.IndicesCount += 6;
-	}
-	// ----------------------------------------- Draw Rotation ------------------------------------------
-
-	void Renderer2D::DrawRotationQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& color)
-	{
-		DrawRotationQuad({ position.x, position.y, 0.0f }, size, rotation, color);
-	}
-	void Renderer2D::DrawRotationQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& color)
-	{
-		//计算transfrom
-		glm::mat4 transfrom = glm::translate(glm::mat4(1.0f), position)
-			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[0];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 0.0f, 1.0f };
-		s_Data.QuadVertexPtr->TexSlot = 0.0f;
-		s_Data.QuadVertexPtr->TexTiling = 1.0f;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[1];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 1.0f, 1.0f };
-		s_Data.QuadVertexPtr->TexSlot = 0.0f;
-		s_Data.QuadVertexPtr->TexTiling = 1.0f;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[2];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 1.0f, 0.0f };
-		s_Data.QuadVertexPtr->TexSlot = 0.0f;
-		s_Data.QuadVertexPtr->TexTiling = 1.0f;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[3];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 0.0f, 0.0f };
-		s_Data.QuadVertexPtr->TexSlot = 0.0f;
-		s_Data.QuadVertexPtr->TexTiling = 1.0f;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.IndicesCount += 6;
-	}
-	void Renderer2D::DrawRotationQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture,const glm::vec4& color, float tilingFactor)
-	{
-		DrawRotationQuad({ position.x, position.y, 0.0f }, size, rotation, texture, color, tilingFactor);
-	}
-	void Renderer2D::DrawRotationQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture,const glm::vec4& color, float tilingFactor)
-	{
-		float texIndex = 0.0f;
-		//首先处理Tex
-		for (uint32_t i = 1; i < s_Data.TexIndex; i++)
-		{
-			if (texture->GetRenderID() == s_Data.TexSlots[i]->GetRenderID())
-			{
-				texIndex = (float)i;
-				break;
-			}
-		}
-		if (texIndex == 0.0f)
-		{
-			s_Data.TexSlots[s_Data.TexIndex] = texture;
-			texIndex = (float)s_Data.TexIndex;
-			s_Data.TexIndex++;
-		}
-
-		glm::mat4 transfrom = glm::translate(glm::mat4(1.0f), position)
-			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-
-		//数据
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[0];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 0.0f, 1.0f };
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[1];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 1.0f, 1.0f };
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[2];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 1.0f, 0.0f };
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[3];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 0.0f, 0.0f };
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.IndicesCount += 6;
-	}
-	void Renderer2D::DrawRotationQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<SubTexture>& texture, const glm::vec4& color, float tilingFactor)
-	{
-		DrawRotationQuad({ position.x, position.y, 0.0f }, size, rotation, texture, color, tilingFactor);
-	}
-	void Renderer2D::DrawRotationQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<SubTexture>& texture, const glm::vec4& color, float tilingFactor)
-	{
-		float texIndex = 0.0f;
-		//首先处理Tex
-		for (uint32_t i = 1; i < s_Data.TexIndex; i++)
-		{
-			if (texture->GetTexture()->GetRenderID() == s_Data.TexSlots[i]->GetRenderID())
-			{
-				texIndex = (float)i;
-				break;
-			}
-		}
-		if (texIndex == 0.0f)
-		{
-			s_Data.TexSlots[s_Data.TexIndex] = texture->GetTexture();
-			texIndex = (float)s_Data.TexIndex;
-			s_Data.TexIndex++;
-		}
-
-		glm::mat4 transfrom = glm::translate(glm::mat4(1.0f), position)
-			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-
-		//数据
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[0];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = texture->GetCoords()[3];
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[1];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = texture->GetCoords()[2];
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[2];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = texture->GetCoords()[1];
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transfrom * s_Data.QuadVertexPosition[3];
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = texture->GetCoords()[0];
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = tilingFactor;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.IndicesCount += 6;
-	}
-
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, const Ref<Texture2D>& texture)
-	{
-		glm::vec4 leftDown = s_Data.QuadVertexPosition[0];
-		glm::vec4 rightDown = s_Data.QuadVertexPosition[1];
-		glm::vec4 rightUp = s_Data.QuadVertexPosition[2];
-		glm::vec4 leftUp = s_Data.QuadVertexPosition[3];
-
-		float texIndex = 0.0f;
-		if (texture == nullptr)
-		{
-
-		}
-		else
-		{
-			//图片插槽
-			{
-
-				for (uint32_t i = 1; i < s_Data.TexIndex; i++)
-				{
-					if (texture->GetRenderID() == s_Data.TexSlots[i]->GetRenderID())
-					{
-						texIndex = (float)i;
-						break;
-					}
-				}
-				if (texIndex == 0.0f)
-				{
-					s_Data.TexSlots[s_Data.TexIndex] = texture;
-					texIndex = (float)s_Data.TexIndex;
-					s_Data.TexIndex++;
-				}
-			}
-
-			//修正比例
-			float aspectRatio = (float)texture->GetWidth() / (float)texture->GetHeight();
-
-			leftDown.x *= aspectRatio;
-			rightDown.x *= aspectRatio;
-			rightUp.x *= aspectRatio;
-			leftUp.x *= aspectRatio;
-		}
-
-		s_Data.QuadVertexPtr->Position = transform * leftDown;
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 0.0f, 0.0f };
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = 1.0f;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transform * rightDown;
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 1.0f, 0.0f };
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = 1.0f;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transform * rightUp;
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 1.0f, 1.0f };
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = 1.0f;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.QuadVertexPtr->Position = transform * leftUp;
-		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 0.0f, 1.0f };
-		s_Data.QuadVertexPtr->TexSlot = texIndex;
-		s_Data.QuadVertexPtr->TexTiling = 1.0f;
-		s_Data.QuadVertexPtr++;
-
-		s_Data.IndicesCount += 6;
-	}
+	
 	void Renderer2D::DrawQuadEntity(const glm::mat4& transform, const glm::vec4& color, int EntityID, const Ref<Texture2D>& texture)
 	{
-
+		DrawQuadEntity(transform, color, EntityID, { 0.0f, 0.0f }, {1.0f, 1.0f}, texture);
+		
+	}
+	void Renderer2D::DrawQuadEntity(const glm::mat4& transform, const glm::vec4& color, int EntityID, const glm::vec2& minTexCoord, const glm::vec2& maxTexCoord
+		, const Ref<Texture2D>& texture)
+	{
 		float texIndex = 0.0f;
 		if (texture == nullptr)
 		{
@@ -501,7 +205,7 @@ namespace Adran
 
 		s_Data.QuadVertexPtr->Position = transform * s_Data.QuadVertexPosition[0];
 		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 0.0f, 0.0f };
+		s_Data.QuadVertexPtr->TexCoord = minTexCoord;
 		s_Data.QuadVertexPtr->TexSlot = texIndex;
 		s_Data.QuadVertexPtr->TexTiling = 1.0f;
 		s_Data.QuadVertexPtr->EntityID = EntityID;
@@ -509,7 +213,7 @@ namespace Adran
 
 		s_Data.QuadVertexPtr->Position = transform * s_Data.QuadVertexPosition[1];
 		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 1.0f, 0.0f };
+		s_Data.QuadVertexPtr->TexCoord = { maxTexCoord.x, minTexCoord.y };
 		s_Data.QuadVertexPtr->TexSlot = texIndex;
 		s_Data.QuadVertexPtr->TexTiling = 1.0f;
 		s_Data.QuadVertexPtr->EntityID = EntityID;
@@ -517,7 +221,7 @@ namespace Adran
 
 		s_Data.QuadVertexPtr->Position = transform * s_Data.QuadVertexPosition[2];
 		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 1.0f, 1.0f };
+		s_Data.QuadVertexPtr->TexCoord = maxTexCoord;
 		s_Data.QuadVertexPtr->TexSlot = texIndex;
 		s_Data.QuadVertexPtr->TexTiling = 1.0f;
 		s_Data.QuadVertexPtr->EntityID = EntityID;
@@ -525,7 +229,7 @@ namespace Adran
 
 		s_Data.QuadVertexPtr->Position = transform * s_Data.QuadVertexPosition[3];
 		s_Data.QuadVertexPtr->Color = color;
-		s_Data.QuadVertexPtr->TexCoord = { 0.0f, 1.0f };
+		s_Data.QuadVertexPtr->TexCoord = { minTexCoord.x, maxTexCoord.y };
 		s_Data.QuadVertexPtr->TexSlot = texIndex;
 		s_Data.QuadVertexPtr->TexTiling = 1.0f;
 		s_Data.QuadVertexPtr->EntityID = EntityID;

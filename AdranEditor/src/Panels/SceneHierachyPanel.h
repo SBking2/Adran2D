@@ -24,7 +24,7 @@ namespace Adran
 		void DrawComponent(const std::string& name, Entity entity, UIFunction function);
 		void DrawVec2Control(const std::string& label, glm::vec2& value, float resetValue = 0.0f, float columWidth = 100.0f);
 		void DrawFloatControl(const std::string& label, float& value, float resetValue = 0.0f, float columWidth = 100.0f);
-
+		
 		Ref<Scene> m_scene;
 		Entity m_selectObject;
 	};

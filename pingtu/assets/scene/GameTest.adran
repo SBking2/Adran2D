@@ -1,0 +1,26 @@
+Scene: Adran Scene
+Entities:
+  - Entity: 5482230393132521122
+    NameComponent:
+      Name: Camera
+    TransformComponent:
+      position: [0, 0]
+      rotation: 0
+      scale: [1, 1]
+    CameraComponent:
+      CameraType: 0
+      OrthSize: 2.5
+      OrthNear: -1
+      OrthFar: 1
+      PerFOV: 0.785398185
+      PerNear: 0.00999999978
+      PerFar: 1000
+  - Entity: 8248583655267800713
+    NameComponent:
+      Name: CaoZhiJin
+    TransformComponent:
+      position: [0, 0]
+      rotation: 0
+      scale: [1, 1]
+    SpriteComponent:
+      Color: [1, 1, 1, 1]

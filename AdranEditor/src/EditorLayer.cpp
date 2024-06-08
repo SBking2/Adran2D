@@ -4,7 +4,7 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include "script/CameraController.h"
 #include "script/SelfRotation.h"
@@ -48,58 +48,16 @@ namespace Adran {
 
         //Scene Init()
         {
-
+            m_tempScene = nullptr;
             m_scene = CreateRef<Scene>();
             m_startIcon = Texture2D::Create("assets/Icon/start.png");
             m_pauseIcon = Texture2D::Create("assets/Icon/pause.png");
-            /*auto AnimationTestEntity = CreateRef<Entity>(m_scene->CreateEntity("Anim"));
-            AnimationTestEntity->AddComponent<SpriteComponent>(AssetsManager::GetInstance()->GetTexture2D("assets/Icon/folder.png"));
-            auto& ac = AnimationTestEntity->AddComponent<AnimationComponent>(3.0f, 60);
-            ac.animation->AddScaleKeyFrame(20, { 2.0f, 0.5f });
-            ac.animation->AddScaleKeyFrame(0, { 1.0f, 1.5f });
-            ac.animation->AddScaleKeyFrame(40, { -0.5f, 2.0f });
-            ac.animation->AddTextureKeyFrame(20, "assets/textures/a.png");
-            ac.animation->AddTextureKeyFrame(0, "assets/textures/casual.png");
-            ac.animation->AddTextureKeyFrame(40, "assets/textures/m.png");*/
-            auto caozhi = CreateRef<Entity>(m_scene->CreateEntity("CaoZhiJin"));
-            caozhi->AddComponent<SpriteComponent>();
-            auto& ac = caozhi->AddComponent<AnimationComponent>(0.6, 6);
-            ac.animation->AddTextureKeyFrame(0, "assets/Animation/1.png");
-            ac.animation->AddTextureKeyFrame(1, "assets/Animation/2.png");
-            ac.animation->AddTextureKeyFrame(2, "assets/Animation/3.png");
-            ac.animation->AddTextureKeyFrame(3, "assets/Animation/4.png");
-            ac.animation->AddTextureKeyFrame(4, "assets/Animation/5.png");
-            ac.animation->AddTextureKeyFrame(5, "assets/Animation/6.png");
-            //ac.animation->AddScaleKeyFrame(59, { 1.0f, 1.0f });
-            /*m_cameraEntity->AddComponent<CameraComponent>((float)Application::GetInstance().GetWindow().GetWidth() / (float)Application::GetInstance().GetWindow().GetHeight());
-            m_cameraEntity->AddComponent<ScriptComponent>().Bind<CameraController>();
-
-            auto square = m_scene->CreateEntity("SBKING CUBE");
-            square.AddComponent<SpriteComponent>(glm::vec4{ 0.0f, 1.0f, 0.0f, 1.0f });
-            
-            m_AmiyaEntity = CreateRef<Entity>(m_scene->CreateEntity("Amiya"));
-            m_AmiyaEntity->AddComponent<SpriteComponent>(glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), m_AmiyaTex);
-            m_AmiyaEntity->AddComponent<ScriptComponent>().Bind<SelfRotation>();
-            
-            auto amiyasport = m_scene->CreateEntity("Amiya Sport");
-            amiyasport.AddComponent<SpriteComponent>(glm::vec4(1.0f), m_amiyaSTex);
-            amiyasport.AddComponent<ScriptComponent>().Bind<SelfRotation>();
-
-            auto surzuran = m_scene->CreateEntity("Surzuran Sport");
-            surzuran.AddComponent<SpriteComponent>(glm::vec4(1.0f), m_suzuranTex);
-            surzuran.AddComponent<ScriptComponent>().Bind<SelfRotation>();
-
-            auto weedy = m_scene->CreateEntity("Weedy Sport");
-            weedy.AddComponent<SpriteComponent>(glm::vec4(1.0f), m_weedyTex);
-            weedy.AddComponent<ScriptComponent>().Bind<SelfRotation>();
-
-            auto unknown = m_scene->CreateEntity("Unknown Sport");
-            unknown.AddComponent<SpriteComponent>(glm::vec4(1.0f), m_unKnownTex);
-            unknown.AddComponent<ScriptComponent>().Bind<SelfRotation>();*/
         }
+
 
        m_hierachyPanel = CreateRef<SceneHierachyPanel>(m_scene);
        m_contentPanel = CreateRef<ContentBroserPanel>();
+       m_animPanel = CreateRef<AnimationPanel>();
        m_editorCamera = CreateRef<EditorCamera>((float)Application::GetInstance().GetWindow().GetWidth() / (float)Application::GetInstance().GetWindow().GetWidth());
     }
 
@@ -115,8 +73,8 @@ namespace Adran {
         {
             m_frameBuffer->ReSize((uint32_t)m_viewSize.x, (uint32_t)m_viewSize.y);
             m_scene->SetViewport((uint32_t)m_viewSize.x, (uint32_t)m_viewSize.y);
-            m_editorCamera->SetViewport(m_viewSize.x, m_viewSize.y);
 
+            m_editorCamera->SetViewport(m_viewSize.x, m_viewSize.y);
         }
 
 	    /*if (Input::IsMouseButtonPressed(AR_MOUSE_BUTTON_LEFT))
@@ -146,38 +104,60 @@ namespace Adran {
 
         m_frameBuffer->Bind();
 
-	    RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
-	    RenderCommand::Clear();
-        //ClearAttachment需要放在Scene绘制函数前面
-        m_frameBuffer->ClearAttachment(1, -1);
-
-
-        m_scene->OnUpdateEditor(ts, *m_editorCamera);
-
-        m_editorCamera->OnUpdate(ts);
-
-        //获取鼠标位置
-        auto [mx, my] = ImGui::GetMousePos();
-        //光标位置减去窗口位置就可以获得光标在窗口内的位置
-        mx -= m_viewportBounds[0].x;
-        my -= m_viewportBounds[0].y;
-
-
-
-        //获取viewSize
-        glm::vec2 viewportSize = m_viewportBounds[1] - m_viewportBounds[0];
-        my = viewportSize.y - my;
-        int mouseX = (int)mx;
-        int mouseY = (int)my;
-        if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+        if (m_scene->GetSceneState() == Scene::SceneState::Editor)
         {
-            int pixelData = m_frameBuffer->GetPixel(1, mouseX, mouseY);
-            m_horverdEntity = pixelData;
-            AR_CORE_INFO("Pixel: {0}", pixelData);
-            //AR_CORE_ERROR("Mouse Position: x={0}, y={1}", mouseX, mouseY);
+            RenderCommand::SetClearColor({ 0.1f,0.1f,0.1f,1 });
+            RenderCommand::Clear();
+            //ClearAttachment需要放在Scene绘制函数前面
+            m_frameBuffer->ClearAttachment(1, -1);
+
+
+            m_scene->OnUpdateEditor(ts, *m_editorCamera);
+
+            //There is some bug
+            if (m_isGameViewFocused)
+            {
+                m_editorCamera->OnUpdate(ts);
+            }
+
+            //获取鼠标位置
+            auto [mx, my] = ImGui::GetMousePos();
+            //光标位置减去窗口位置就可以获得光标在窗口内的位置
+            mx -= m_viewportBounds[0].x;
+            my -= m_viewportBounds[0].y;
+
+
+
+            //获取viewSize
+            glm::vec2 viewportSize = m_viewportBounds[1] - m_viewportBounds[0];
+            my = viewportSize.y - my;
+            int mouseX = (int)mx;
+            int mouseY = (int)my;
+            if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+            {
+                int pixelData = m_frameBuffer->GetPixel(1, mouseX, mouseY);
+                m_horverdEntity = pixelData;
+                AR_CORE_INFO("Pixel: {0}", pixelData);
+            }
+            else
+            {
+                m_horverdEntity = -1;
+            }
+            
+        }
+        else
+        {
+            //TODO:Game
+            RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1.0f });
+            RenderCommand::Clear();
+            //ClearAttachment需要放在Scene绘制函数前面
+            m_frameBuffer->ClearAttachment(1, -1);
+            m_scene->OnUpdate(ts);
         }
 
+        
         m_frameBuffer->UnBind();
+
     }
 
     void EditorLayer::OnEvent(Event& event)
@@ -198,13 +178,16 @@ namespace Adran {
         switch (event.GetKeyCode())
         {
         case KeyCode::AR_Q:
-            m_ImGuizmoType = ImGuizmo::OPERATION::TRANSLATE;
+            if(m_isGameViewFocused)
+                m_ImGuizmoType = ImGuizmo::OPERATION::TRANSLATE;
             break;
         case KeyCode::AR_W:
-            m_ImGuizmoType = ImGuizmo::OPERATION::ROTATE;
+            if (m_isGameViewFocused)
+                m_ImGuizmoType = ImGuizmo::OPERATION::ROTATE;
             break;
         case KeyCode::AR_E:
-            m_ImGuizmoType = ImGuizmo::OPERATION::SCALE;
+            if (m_isGameViewFocused)
+                m_ImGuizmoType = ImGuizmo::OPERATION::SCALE;
             break;
         case KeyCode::AR_N:
             if (ctrl)
@@ -224,15 +207,21 @@ namespace Adran {
         default:
             break;
         }
-	    return true;
+        return true;
+
     }
+
     bool EditorLayer::OnMousePressedEvent(MouseButtonPressedEvent& event)
     {
         switch (event.GetButton())
         {
         case MouseCode::MOUSE_BUTTON_LEFT:
-            if (m_horverdEntity >= 0 && m_horverdEntity < 10 && !Input::IsKeyPressed(KeyCode::AR_LEFT_ALT))
+            if (m_horverdEntity >= 0  && !Input::IsKeyPressed(KeyCode::AR_LEFT_ALT))
                 m_hierachyPanel->SetSelectedEntity(Entity{ (entt::entity)m_horverdEntity, m_scene.get() });
+            else if (m_horverdEntity == -1 && m_isGameViewHorverd)
+            {
+                m_hierachyPanel->SetSelectedEntity(Entity());
+            }
             break;
         }
         return true;
@@ -331,7 +320,66 @@ namespace Adran {
 
         ImGui::End();
 
-        ImGui::Begin("Game");
+        EditorGameView();
+
+        UIGameBar();
+
+        m_hierachyPanel->OnImGuiRender();
+        m_contentPanel->OnImGuiRender();
+        
+        //ImGui官方Demo
+        //ImGui::ShowDemoWindow();
+        m_animPanel->OnImGuiRender();
+        ImGui::End();
+    }
+    void EditorLayer::UIGameBar()
+    {
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+
+        auto& colors = ImGui::GetStyle().Colors;
+
+        const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+        const auto& buttonActive = colors[ImGuiCol_ButtonActive];
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+        ImGui::Begin("##GameBar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse );
+        
+        float size = ImGui::GetWindowHeight() - 4.0f;
+        Ref<Texture2D> icon = m_scene->GetSceneState() == Scene::SceneState::Editor ? m_startIcon : m_pauseIcon;
+        
+        //ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+        ImGui::SetCursorPosX((size * 0.5f));
+        if (ImGui::ImageButton((ImTextureID)icon->GetRenderID(), { size, size }))
+        {
+
+            if (m_scene->GetSceneState() == Scene::SceneState::Editor)
+            {
+                m_scene->SetSceneState(Scene::SceneState::Play);
+                m_tempScene = Scene::Copy(m_scene);
+            }
+            else if (m_scene->GetSceneState() == Scene::SceneState::Play)
+            {
+                m_scene->SetSceneState(Scene::SceneState::Editor);
+                m_scene = m_tempScene;
+                m_hierachyPanel->SetScene(m_scene);
+            }
+        }
+
+        ImGui::PopStyleVar(2);
+        ImGui::PopStyleColor(3);
+
+        ImGui::End();
+    }
+    void EditorLayer::EditorGameView()
+    {
+        ImGui::Begin("Scene");
+
+        m_isGameViewFocused = ImGui::IsWindowFocused();
+        m_isGameViewHorverd = ImGui::IsWindowHovered();
+
 
         auto viewportOffset = ImGui::GetCursorPos();
 
@@ -357,10 +405,10 @@ namespace Adran {
 
         //计算这个ImGui窗口的大小和位置
         auto windowSize = ImGui::GetWindowSize();
-        //minBound是光标的位置的左上角
+        //minBound是窗口的位置的左上角
         ImVec2 minBound = ImGui::GetWindowPos();
 
-        //maxBound是光标的位置的右下角
+        //maxBound是窗口的位置的右下角
         ImVec2 maxBound = { minBound.x + windowSize.x, minBound.y + windowSize.y };
 
         m_viewportBounds[0] = { minBound.x, minBound.y };
@@ -368,7 +416,7 @@ namespace Adran {
 
         Entity selectedEntity = m_hierachyPanel->GetSelectedEntity();
 
-        if(selectedEntity  && m_ImGuizmoType != -1)
+        if (selectedEntity && m_ImGuizmoType != -1 && m_scene->GetSceneState() == Scene::SceneState::Editor)
         {
             ImGuizmo::SetOrthographic(true);
             ImGuizmo::SetDrawlist();
@@ -376,7 +424,7 @@ namespace Adran {
             float windowWidth = (float)ImGui::GetWindowWidth();
             float windowHeight = (float)ImGui::GetWindowHeight();
             ImGuizmo::SetRect(m_viewportBounds[0].x, m_viewportBounds[0].y, m_viewportBounds[1].x - m_viewportBounds[0].x, m_viewportBounds[1].y - m_viewportBounds[0].y);
-            
+
             const glm::mat4& cameraProjection = m_editorCamera->GetProjectionMatrix();
             glm::mat4 cameraView = m_editorCamera->GetViewMatrix();
 
@@ -384,60 +432,21 @@ namespace Adran {
             glm::mat4 transform = (glm::mat4)tc;
 
             ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
-            (ImGuizmo::OPERATION)m_ImGuizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
+                (ImGuizmo::OPERATION)m_ImGuizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform));
 
             if (ImGuizmo::IsUsing() && !Input::IsKeyPressed(KeyCode::AR_LEFT_ALT))
             {
-                glm::vec3 position, rotation, scale;
-                Math::DecomposeTransform(transform, position, rotation, scale);
+                glm::vec3 position = { tc.position.x, tc.position.y, 0.0f}
+                    , rotation = {0.0f, 0.0f, tc.rotation}
+                , scale = { tc.scale.x, tc.scale.y, 1.0f };
 
-                //glm::vec3 deltaRotation = rotation - tc.rotation;
-                tc.position = position;
-                //tc.rotation += deltaRotation;
-                tc.scale = scale;
+                Math::DecomTransform(transform, position, rotation, scale);
+
+                tc.position = { position.x, position.y};
+                tc.rotation = rotation.z;
+                tc.scale = {scale.x, scale.y};
             }
         }
-
-        ImGui::End();
-
-        UIGameBar();
-
-        m_hierachyPanel->OnImGuiRender();
-        m_contentPanel->OnImGuiRender();
-        
-        //ImGui官方Demo
-        //ImGui::ShowDemoWindow();
-
-        ImGui::End();
-    }
-    void EditorLayer::UIGameBar()
-    {
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
-        ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
-        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-
-        auto& colors = ImGui::GetStyle().Colors;
-
-        const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
-        const auto& buttonActive = colors[ImGuiCol_ButtonActive];
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
-
-        ImGui::Begin("##GameBar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse );
-        
-        float size = ImGui::GetWindowHeight() - 4.0f;
-        Ref<Texture2D> icon = m_scene->sceneState == Scene::SceneState::Editor ? m_startIcon : m_pauseIcon;
-        
-        //ImGui::SameLine((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-        ImGui::SetCursorPosX((size * 0.5f));
-        if (ImGui::ImageButton((ImTextureID)icon->GetRenderID(), { size, size }))
-        {
-            m_scene->sceneState = m_scene->sceneState == Scene::SceneState::Editor ? Scene::SceneState::Play
-                : Scene::SceneState::Editor;
-        }
-
-        ImGui::PopStyleVar(2);
-        ImGui::PopStyleColor(3);
 
         ImGui::End();
     }

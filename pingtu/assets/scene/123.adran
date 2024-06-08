@@ -1,0 +1,30 @@
+Scene: Adran Scene
+Entities:
+  - Entity: 8733703714201715927
+    NameComponent:
+      Name: 1
+    TransformComponent:
+      position: [0, 0]
+      rotation: 0
+      scale: [1, 1]
+  - Entity: 4283053388705633600
+    NameComponent:
+      Name: 2
+    TransformComponent:
+      position: [0, 0]
+      rotation: 0
+      scale: [1, 1]
+  - Entity: 7293931072489716760
+    NameComponent:
+      Name: 3
+    TransformComponent:
+      position: [0, 0]
+      rotation: 0
+      scale: [1, 1]
+  - Entity: 10568946660260552587
+    NameComponent:
+      Name: 4
+    TransformComponent:
+      position: [0, 0]
+      rotation: 0
+      scale: [1, 1]

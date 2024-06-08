@@ -84,6 +84,7 @@
     <None Include="..\..\Adran\vendor\yaml-cpp\premake5.lua" />
     <None Include="..\..\AdranEditor\premake5.lua" />
     <None Include="..\..\HandMeat\premake5.lua" />
+    <None Include="..\..\pingtu\premake5.lua" />
     <None Include="..\..\premake5.lua" />
     <None Include="premake5.lua" />
   </ItemGroup>

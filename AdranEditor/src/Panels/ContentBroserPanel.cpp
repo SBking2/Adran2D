@@ -6,6 +6,10 @@ namespace Adran
 {
 	const std::filesystem::path g_AssetPath = "assets";
 
+	const std::unordered_set<std::string> image_extensions = {
+	".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".webp"
+	};
+
 	ContentBroserPanel::ContentBroserPanel()
 	{
 		m_baseDiretory = g_AssetPath;
@@ -39,14 +43,44 @@ namespace Adran
 		for (auto& file : std::filesystem::directory_iterator(m_currentDiretory))
 		{
 			const auto& path = file.path();
+
+			//ÅÐ¶ÏÎÄ¼þºó×º
+			auto ext = path.extension().string();
+			std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+			bool isPic = image_extensions.find(ext) != image_extensions.end();
+
 			std::string fileNameString = path.filename().string();
 
 			ImGui::PushID(fileNameString.c_str());
 
-			Ref<Texture2D> icon = file.is_directory() ? m_folderIcon : m_descriptionIcon;
+			Ref<Texture2D> icon;
 
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::ImageButton((ImTextureID)icon->GetRenderID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+
+			if (isPic)
+			{
+				icon = AssetsManager::GetInstance()->GetTexture2D(path.string());
+				float width = icon->GetWidth();
+				float height = icon->GetHeight();
+				float aspectRatio = width / height;
+				if (width > height)
+				{
+					width = thumbnailSize;
+					height = thumbnailSize / aspectRatio;
+				}
+				else
+				{
+					height = thumbnailSize;
+					width = height * aspectRatio;
+				}
+				ImGui::ImageButton((ImTextureID)icon->GetRenderID(), { width, height }, { 0, 1 }, { 1, 0 });
+			}
+			else
+			{
+				icon = file.is_directory() ? m_folderIcon : m_descriptionIcon;
+				ImGui::ImageButton((ImTextureID)icon->GetRenderID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+			}
+
 			ImGui::PopStyleColor();
 
 			if(ImGui::BeginDragDropSource())

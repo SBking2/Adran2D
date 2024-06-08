@@ -11,7 +11,6 @@ namespace Adran {
 	{
 		RenderCommand::Init();
 		Renderer2D::Init();
-		//Renderer3D::Init();
 	}
 
 	void Renderer::BeginScene(OrthographicCamera& camera)

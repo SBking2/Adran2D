@@ -1,0 +1,18 @@
+Animation: Adran Animation
+Animation_Duration: 0.5
+Animation_Samples: 6
+KeyFrame:
+  Transform_Key:
+    Position_Key:
+      0: [0, 0]
+    Rotation_Key:
+      0: 0
+    Scale_Key:
+      0: [1, 1]
+  Texture_Key:
+    0: assets/Animation/1.png
+    1: assets/Animation/2.png
+    2: assets/Animation/3.png
+    3: assets/Animation/4.png
+    4: assets/Animation/5.png
+    5: assets/Animation/6.png

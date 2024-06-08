@@ -7,6 +7,9 @@
     <Filter Include="src\Adran">
       <UniqueIdentifier>{020F8DB2-6E79-4129-B7B7-F2CE23611F7E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Adran\Animation">
+      <UniqueIdentifier>{71F2F9ED-DD53-D7FB-66C1-1DAED2210EBB}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Adran\Core">
       <UniqueIdentifier>{9AE43158-86B2-255E-6F46-96845BB301C3}</UniqueIdentifier>
     </Filter>
@@ -77,6 +80,12 @@
   <ItemGroup>
     <ClInclude Include="src\Adran.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Adran\Animation\Animation.h">
+      <Filter>src\Adran\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Adran\Animation\AnimationSerialize.h">
+      <Filter>src\Adran\Animation</Filter>
     </ClInclude>
     <ClInclude Include="src\Adran\Core\Application.h">
       <Filter>src\Adran\Core</Filter>
@@ -208,6 +217,9 @@
       <Filter>src\Adran\Scene</Filter>
     </ClInclude>
     <ClInclude Include="src\Adran\Utlis\PlatformUtlis.h">
+      <Filter>src\Adran\Utlis</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Adran\Utlis\SerializeUtils.h">
       <Filter>src\Adran\Utlis</Filter>
     </ClInclude>
     <ClInclude Include="src\AdranPreCompile.h">
@@ -1494,9 +1506,14 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Adran\Animation\Animation.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Adran\Animation\Animation.cpp">
+      <Filter>src\Adran\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Adran\Animation\AnimationSerialize.cpp">
+      <Filter>src\Adran\Animation</Filter>
+    </ClCompile>
     <ClCompile Include="src\Adran\Core\Application.cpp">
       <Filter>src\Adran\Core</Filter>
     </ClCompile>
@@ -1581,6 +1598,9 @@
     <ClCompile Include="src\Adran\Scene\ScriptEngine.cpp">
       <Filter>src\Adran\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="src\Adran\Utlis\SerializeUtils.cpp">
+      <Filter>src\Adran\Utlis</Filter>
+    </ClCompile>
     <ClCompile Include="src\AdranPreCompile.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -1620,6 +1640,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Adran\Animation\Animation.cpp" />
   </ItemGroup>
 </Project>

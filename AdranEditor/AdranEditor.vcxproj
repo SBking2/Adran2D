@@ -139,18 +139,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\EditorLayer.h" />
+    <ClInclude Include="src\Panels\AnimationPanel.h" />
     <ClInclude Include="src\Panels\ContentBroserPanel.h" />
     <ClInclude Include="src\Panels\SceneHierachyPanel.h" />
-    <ClInclude Include="src\ParticleSystem.h" />
     <ClInclude Include="src\script\CameraController.h" />
     <ClInclude Include="src\script\SelfRotation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\EditorApp.cpp" />
     <ClCompile Include="src\EditorLayer.cpp" />
+    <ClCompile Include="src\Panels\AnimationPanel.cpp" />
     <ClCompile Include="src\Panels\ContentBroserPanel.cpp" />
     <ClCompile Include="src\Panels\SceneHierachyPanel.cpp" />
-    <ClCompile Include="src\ParticleSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adran\Adran.vcxproj">

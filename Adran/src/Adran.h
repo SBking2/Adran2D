@@ -35,10 +35,15 @@
 #include "Adran\Scene\Component.h"
 #include "Adran\Scene\Script.h"
 
+// -------------AnimationAbou-------------------
+#include "Adran/Animation/Animation.h"
+#include "Adran/Animation/AnimationSerialize.h"
+
 
 // --------------Utlis---------------------
 
 #include "Adran/Utlis/PlatformUtlis.h"
+#include "Adran/Utlis/SerializeUtils.h"
 #include "Adran\Math\Math.h"
 #include "Adran/Renderer/Camera/OrthographicCameraController.h"
 

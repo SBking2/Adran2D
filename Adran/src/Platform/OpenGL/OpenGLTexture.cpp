@@ -46,6 +46,7 @@ namespace Adran
 		uint32_t bpp = m_dataFormat == GL_RGBA ? 4 : 3;
 		AR_CORE_ASSERT(size == m_width * m_height * bpp, "data must be entire texture!");
 		glTextureSubImage2D(m_renderID, 0, 0, 0, m_width, m_height, m_dataFormat, GL_UNSIGNED_BYTE, data);
+		AR_ERROR("Create Texture ID: {0}", m_renderID);
 	}
 
 	void OpenGLTexture2D::Init()

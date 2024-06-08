@@ -9,6 +9,8 @@
 
 namespace Adran
 {
+    class AnimationSerialize;
+
     class Animation
     {
     public:
@@ -58,5 +60,7 @@ namespace Adran
         float m_timeContainer = 0.0f;
         float m_duration;
         uint32_t m_samples;
+
+        friend class AnimationSerialize;
     };
 }

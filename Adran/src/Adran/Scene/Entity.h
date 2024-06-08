@@ -28,7 +28,7 @@ namespace Adran
 		template<typename T>
 		bool HasComponent()
 		{
-			return m_scene->Reg().all_of<T>(m_entityHandle);
+			return m_scene->Reg().has<T>(m_entityHandle);
 		}
 		template<typename T>
 		void RemoveComponent()
@@ -74,6 +74,8 @@ namespace Adran
 		{
 			return m_entityHandle;
 		}
+
+		entt::entity Reg() { return m_entityHandle; }
 	private:
 		entt::entity m_entityHandle;
 		//用来指向包含此entity的sence,不用Ref<Sence>是因为不希望又系统控制Sence的Delete

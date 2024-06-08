@@ -78,4 +78,16 @@ namespace Adran::Math {
 		return true;
 	}
 
+	void DecomTransform(const glm::mat4& transform, glm::vec3& position, glm::vec3& rotation, glm::vec3& scale)
+	{
+		glm::vec3 skew;
+		glm::vec4 perspective;
+		glm::quat orientation;
+
+		// 使用GLM的矩阵分解函数
+		glm::decompose(transform, scale, orientation, position, skew, perspective);
+		// 将四元数转换为欧拉角（弧度）
+		rotation = glm::eulerAngles(orientation);
+
+	}
 }

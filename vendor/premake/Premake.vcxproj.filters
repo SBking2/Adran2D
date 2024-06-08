@@ -28,6 +28,9 @@
     <Filter Include="..\HandMeat">
       <UniqueIdentifier>{720CFBA3-DEC1-7399-67B6-6D70D36A6A9D}</UniqueIdentifier>
     </Filter>
+    <Filter Include="..\pingtu">
+      <UniqueIdentifier>{472B2A83-B395-DEF9-FCD3-8F9F687DBC4E}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\Adran\premake5.lua">
@@ -50,6 +53,9 @@
     </None>
     <None Include="..\..\HandMeat\premake5.lua">
       <Filter>..\HandMeat</Filter>
+    </None>
+    <None Include="..\..\pingtu\premake5.lua">
+      <Filter>..\pingtu</Filter>
     </None>
     <None Include="..\..\premake5.lua">
       <Filter>..</Filter>

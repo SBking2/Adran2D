@@ -3,6 +3,7 @@
 #include"ParticleSystem.h"
 #include "Panels\SceneHierachyPanel.h"
 #include "Panels\ContentBroserPanel.h"
+#include "Panels/AnimationPanel.h"
 #include "ImGuizmo\ImGuizmo.h"
 namespace Adran
 {
@@ -23,6 +24,7 @@ namespace Adran
 
 	private:
 		void UIGameBar();
+		void EditorGameView();
 	private:
 		void NewScene();
 		void OpenScenePath(const std::filesystem::path& path);
@@ -44,17 +46,21 @@ namespace Adran
 		
 		//Scene
 		Ref<Scene> m_scene;
-		//Ref<Entity> m_cameraEntity;
-		//Ref<Entity> m_AmiyaEntity;
+		Ref<Scene> m_tempScene;
+
 		//Other
 		glm::vec2 m_viewSize = glm::vec2(0.0f);
 		glm::vec2 m_viewportBounds[2] = { glm::vec2(0.0f), glm::vec2(0.0f) };
+
 		int m_ImGuizmoType = ImGuizmo::OPERATION::TRANSLATE;
 		int m_horverdEntity = -1;
 		Ref<SceneHierachyPanel> m_hierachyPanel;
 		Ref<ContentBroserPanel> m_contentPanel;
-
+		Ref<AnimationPanel> m_animPanel;
 		Ref<EditorCamera> m_editorCamera;
+	private:
+		bool m_isGameViewFocused = true;
+		bool m_isGameViewHorverd = false;
 	private:
 		//Editor Icon
 		Ref<Texture2D> m_startIcon;
